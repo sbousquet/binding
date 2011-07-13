@@ -125,7 +125,7 @@ public class SimplePropertyAdapterTest
 		final TestBean bean = new TestBean("1");
 		BeanAdapter beanAdapter = new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class);
 		
-		SimplePropertyAdapter bean1ValueModel = beanAdapter.getValueModel(TestBean.PROPERTYNAME_BEAN1);
+		SimplePropertyAdapter bean1ValueModel = (SimplePropertyAdapter) beanAdapter.getValueModel(TestBean.PROPERTYNAME_BEAN1);
 		BeanAdapter bean1Adapter = new BeanAdapter(new StandardChangeSupportFactory(),bean1ValueModel, TestBeanDetail.class);  
 		
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(bean1Adapter, TestBeanDetail.PROPERTYNAME_PROPERTY);

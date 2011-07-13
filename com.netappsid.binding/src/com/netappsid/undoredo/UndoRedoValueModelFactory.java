@@ -1,6 +1,7 @@
 package com.netappsid.undoredo;
 
 import com.jgoodies.binding.value.ValueModel;
+import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.binding.value.ValueModelFactory;
 
 public class UndoRedoValueModelFactory implements ValueModelFactory
@@ -31,5 +32,12 @@ public class UndoRedoValueModelFactory implements ValueModelFactory
 	public UndoRedoValueModel wrap(ValueModel valueModel)
 	{
 		return new UndoRedoValueModel(undoRedoManager, valueModel);
+	}
+
+	@Override
+	public CollectionValueModel getCollectionValueModel(String propertyName)
+	{
+		CollectionValueModel collectionValueModel = delegate.getCollectionValueModel(propertyName);
+		return new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel);
 	}
 }

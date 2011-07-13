@@ -8,6 +8,8 @@ import java.util.Map;
 import com.jgoodies.binding.beans.PropertyUnboundException;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
+import com.netappsid.binding.value.AbstractValueModel;
+import com.netappsid.binding.value.IndexedValueModel;
 import com.netappsid.binding.value.ValueHolder;
 import com.netappsid.validate.Validate;
 
@@ -17,6 +19,7 @@ public class BeanAdapter extends Bean
 	private final ValueModel beanChannel;
 	private final Class<?> beanClass;
 	private final Map<String, SimplePropertyAdapter> propertyAdapters;
+	private final Map<String, CollectionValueModel> collectionValueModels;
 	private final IndirectPropertyChangeSupport indirectChangeSupport;
 	private final PropertyChangeListener propertyChangeHandler;
 
@@ -26,12 +29,12 @@ public class BeanAdapter extends Bean
 	{
 		this(changeSupportFactory, (ValueModel) null, beanClass);
 	}
-	
+
 	public BeanAdapter(ChangeSupportFactory changeSupportFactory, Object bean, Class<?> beanClass)
 	{
 		this(changeSupportFactory, new ValueHolder(changeSupportFactory, bean, true), beanClass);
 	}
-	
+
 	public BeanAdapter(ChangeSupportFactory changeSupportFactory, ValueModel beanChannel, Class<?> beanClass)
 	{
 		super(changeSupportFactory);
@@ -39,6 +42,7 @@ public class BeanAdapter extends Bean
 		this.beanChannel = beanChannel != null ? beanChannel : new ValueHolder(changeSupportFactory, null, true);
 		this.beanClass = Validate.notNull(beanClass);
 		this.propertyAdapters = new HashMap<String, SimplePropertyAdapter>();
+		this.collectionValueModels = new HashMap<String, CollectionValueModel>();
 		this.indirectChangeSupport = new IndirectPropertyChangeSupport(this.beanChannel);
 		this.propertyChangeHandler = new PropertyChangeHandler();
 		this.beanChannel.addValueChangeListener(new BeanChangeHandler());
@@ -52,7 +56,7 @@ public class BeanAdapter extends Bean
 	{
 		return beanClass;
 	}
-	
+
 	public ValueModel getBeanChannel()
 	{
 		return beanChannel;
@@ -82,14 +86,29 @@ public class BeanAdapter extends Bean
 	{
 		Validate.notNull(propertyName, "The property name must not be null.");
 
-		final SimplePropertyAdapter registeredPropertyAdapter = propertyAdapters.get(propertyName);
+		SimplePropertyAdapter registeredPropertyAdapter = propertyAdapters.get(propertyName);
 
 		if (registeredPropertyAdapter == null)
 		{
-			propertyAdapters.put(propertyName, new SimplePropertyAdapter(this, propertyName));
+			registeredPropertyAdapter = new SimplePropertyAdapter(this, propertyName);
+			propertyAdapters.put(propertyName, registeredPropertyAdapter);
 		}
 
 		return propertyAdapters.get(propertyName);
+	}
+
+	public CollectionValueModel getCollectionValueModel(String propertyName)
+	{
+		CollectionValueModel collectionValueModel = collectionValueModels.get(propertyName);
+
+		if (collectionValueModel == null)
+		{
+			SimplePropertyAdapter propertyAdapter = getValueModel(propertyName);
+			collectionValueModel = new IndexedValueModel(propertyAdapter);
+			collectionValueModels.put(propertyName, collectionValueModel);
+		}
+
+		return collectionValueModel;
 	}
 
 	public synchronized void addBeanPropertyChangeListener(PropertyChangeListener listener)
@@ -155,7 +174,7 @@ public class BeanAdapter extends Bean
 			}
 		}
 	}
-	
+
 	protected ChangeSupportFactory getChangeSupportFactory()
 	{
 		return changeSupportFactory;
@@ -179,6 +198,7 @@ public class BeanAdapter extends Bean
 
 	private final class BeanChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			final Object newBean = evt.getNewValue() != null ? evt.getNewValue() : getBean();
@@ -208,6 +228,7 @@ public class BeanAdapter extends Bean
 
 	private final class PropertyChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			if (evt.getPropertyName() == null)
@@ -216,7 +237,7 @@ public class BeanAdapter extends Bean
 			}
 			else
 			{
-				final SimplePropertyAdapter adapter = propertyAdapters.get(evt.getPropertyName());
+				final AbstractValueModel adapter = propertyAdapters.get(evt.getPropertyName());
 
 				if (adapter != null)
 				{
