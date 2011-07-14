@@ -5,9 +5,9 @@ import java.util.List;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 
-public class IndexedValueModel extends AbstractCollectionValueModel
+public class IndexedCollectionValueModel extends AbstractCollectionValueModel
 {
-	public IndexedValueModel(SimplePropertyAdapter propertyAdapter)
+	public IndexedCollectionValueModel(SimplePropertyAdapter propertyAdapter)
 	{
 		super(propertyAdapter);
 	}

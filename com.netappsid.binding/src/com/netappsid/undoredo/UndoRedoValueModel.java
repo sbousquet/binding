@@ -37,8 +37,9 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 	@Override
 	public void setValue(Object value)
 	{
-		UndoRedoValue undoRedoAction = new UndoRedoValue(getValueModel().getValue(), value);
-		getUndoRedoManager().push(this, undoRedoAction);
+		UndoRedoValue undoRedoValue = new UndoRedoValue(getValueModel().getValue(), value);
+		UndoRedoValueModelOperation undoRedoValueModelOperation = new UndoRedoValueModelOperation(this, undoRedoValue);
+		getUndoRedoManager().push(undoRedoValueModelOperation);
 		getUndoRedoManager().beginTransaction();
 		getValueModel().setValue(value);
 		getUndoRedoManager().endTransaction();

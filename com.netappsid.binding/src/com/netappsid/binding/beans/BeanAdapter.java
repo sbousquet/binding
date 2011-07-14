@@ -9,7 +9,7 @@ import com.jgoodies.binding.beans.PropertyUnboundException;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
-import com.netappsid.binding.value.IndexedValueModel;
+import com.netappsid.binding.value.IndexedCollectionValueModel;
 import com.netappsid.binding.value.ValueHolder;
 import com.netappsid.validate.Validate;
 
@@ -104,7 +104,7 @@ public class BeanAdapter extends Bean
 		if (collectionValueModel == null)
 		{
 			SimplePropertyAdapter propertyAdapter = getValueModel(propertyName);
-			collectionValueModel = new IndexedValueModel(propertyAdapter);
+			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter);
 			collectionValueModels.put(propertyName, collectionValueModel);
 		}
 
