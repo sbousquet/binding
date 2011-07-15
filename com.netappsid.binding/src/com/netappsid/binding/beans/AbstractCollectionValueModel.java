@@ -11,7 +11,7 @@ import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ObservableCollection;
 
-public abstract class AbstractCollectionValueModel<T extends ObservableCollection> extends AbstractValueModel implements CollectionValueModel
+public abstract class AbstractCollectionValueModel<T extends ObservableCollection, K> extends AbstractValueModel implements CollectionValueModel<K>
 {
 	private final class CollectionChangeHandler implements CollectionChangeListener
 	{

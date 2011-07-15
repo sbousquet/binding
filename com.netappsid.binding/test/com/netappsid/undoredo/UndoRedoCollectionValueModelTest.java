@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -21,21 +24,27 @@ public class UndoRedoCollectionValueModelTest
 	private UndoRedoManager undoRedoManager;
 	private CollectionValueModel collectionValueModel;
 	private CollectionChangeListener listener;
-	private UndoRedoCollectionValueModel valueModel;
+	private UndoRedoCollectionValueModel undoRedoCollectionValueModel;
 	private CollectionChangeListener undoRedoManagerPushHandler;
 	private Object oldObject;
 	private Object newObject;
 	private ListDifference difference;
+	private Object firstObject;
 
 
 	@Before
 	public void setUp()
 	{
 		undoRedoManager = mock(UndoRedoManager.class);
+
+		firstObject = new Object();
+		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(firstObject);
+
 		collectionValueModel = mock(CollectionValueModel.class);
+		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
 		listener = mock(CollectionChangeListener.class);
 
-		valueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel);
+		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel);
 
 		oldObject = new Object();
 		newObject = new Object();
@@ -46,7 +55,7 @@ public class UndoRedoCollectionValueModelTest
 	@Test
 	public void testAddCollectionChangeListener()
 	{
-		valueModel.addCollectionChangeListener(listener);
+		undoRedoCollectionValueModel.addCollectionChangeListener(listener);
 
 		verify(collectionValueModel).addCollectionChangeListener(listener);
 	}
@@ -54,7 +63,7 @@ public class UndoRedoCollectionValueModelTest
 	@Test
 	public void testRemoveCollectionChangeListener()
 	{
-		valueModel.removeCollectionChangeListener(listener);
+		undoRedoCollectionValueModel.removeCollectionChangeListener(listener);
 
 		verify(collectionValueModel).removeCollectionChangeListener(listener);
 	}
@@ -64,12 +73,12 @@ public class UndoRedoCollectionValueModelTest
 	{
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(newObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
-		valueModel.undo(new CollectionChangeEvent(newObservableArrayList, difference));
+		undoRedoCollectionValueModel.undo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel).removeCollectionChangeListener(valueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel).addCollectionChangeListener(valueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		
 		assertTrue(newObservableArrayList.contains(oldObject));
 		assertFalse(newObservableArrayList.contains(newObject));
@@ -80,14 +89,96 @@ public class UndoRedoCollectionValueModelTest
 	{
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(oldObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
-		valueModel.redo(new CollectionChangeEvent(newObservableArrayList, difference));
+		undoRedoCollectionValueModel.redo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel).removeCollectionChangeListener(valueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel).addCollectionChangeListener(valueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
 		assertFalse(newObservableArrayList.contains(oldObject));
 		assertTrue(newObservableArrayList.contains(newObject));
+	}
+
+	@Test
+	public void testSize()
+	{
+		undoRedoCollectionValueModel.size();
+		verify(collectionValueModel).size();
+	}
+
+	@Test
+	public void testAdd()
+	{
+		Object added = new Object();
+		undoRedoCollectionValueModel.add(added);
+		verify(collectionValueModel).add(added);
+	}
+
+	@Test
+	public void testAddAll()
+	{
+		List added = Arrays.asList(new Object(), new Object());
+		undoRedoCollectionValueModel.addAll(added);
+		verify(collectionValueModel).addAll(added);
+	}
+
+	@Test
+	public void testClear()
+	{
+		undoRedoCollectionValueModel.clear();
+		verify(collectionValueModel).clear();
+	}
+
+	@Test
+	public void testContains()
+	{
+		undoRedoCollectionValueModel.contains(firstObject);
+		verify(collectionValueModel).contains(firstObject);
+	}
+
+	@Test
+	public void testContainsAll()
+	{
+		List added = Arrays.asList(new Object(), new Object());
+		undoRedoCollectionValueModel.containsAll(added);
+		verify(collectionValueModel).containsAll(added);
+	}
+
+	@Test
+	public void testIsEmpty()
+	{
+		undoRedoCollectionValueModel.isEmpty();
+		verify(collectionValueModel).isEmpty();
+	}
+
+	@Test
+	public void testIterator()
+	{
+		undoRedoCollectionValueModel.iterator();
+		verify(collectionValueModel).iterator();
+	}
+
+	@Test
+	public void testRemove()
+	{
+		undoRedoCollectionValueModel.remove(firstObject);
+		verify(collectionValueModel).remove(firstObject);
+	}
+
+	@Test
+	public void testRemoveAll()
+	{
+		List removed = Arrays.asList(new Object(), new Object());
+		undoRedoCollectionValueModel.removeAll(removed);
+		verify(collectionValueModel).removeAll(removed);
+	}
+
+	@Test
+	public void testRetainAll()
+	{
+		List retained = Arrays.asList(new Object(), new Object());
+		undoRedoCollectionValueModel.retainAll(retained);
+		verify(collectionValueModel).retainAll(retained);
 	}
 }

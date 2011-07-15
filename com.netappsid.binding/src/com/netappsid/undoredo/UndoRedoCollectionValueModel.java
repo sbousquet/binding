@@ -1,5 +1,8 @@
 package com.netappsid.undoredo;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
@@ -98,5 +101,83 @@ public class UndoRedoCollectionValueModel<T extends CollectionValueModel> extend
 		{
 			getValueModel().addCollectionChangeListener(listener);
 		}
+	}
+
+	@Override
+	public Object get(Object key)
+	{
+		return getValueModel().get(key);
+	}
+
+	@Override
+	public void set(Object key, Object newValue)
+	{
+		getValueModel().set(key, newValue);
+	}
+
+	@Override
+	public boolean add(Object e)
+	{
+		return getValueModel().add(e);
+	}
+
+	@Override
+	public boolean addAll(Collection c)
+	{
+		return getValueModel().addAll(c);
+	}
+
+	@Override
+	public void clear()
+	{
+		getValueModel().clear();
+	}
+
+	@Override
+	public boolean contains(Object e)
+	{
+		return getValueModel().contains(e);
+	}
+
+	@Override
+	public boolean containsAll(Collection c)
+	{
+		return getValueModel().containsAll(c);
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return getValueModel().isEmpty();
+	}
+
+	@Override
+	public Iterator iterator()
+	{
+		return getValueModel().iterator();
+	}
+
+	@Override
+	public boolean remove(Object e)
+	{
+		return getValueModel().remove(e);
+	}
+
+	@Override
+	public boolean removeAll(Collection c)
+	{
+		return getValueModel().removeAll(c);
+	}
+
+	@Override
+	public boolean retainAll(Collection c)
+	{
+		return getValueModel().retainAll(c);
+	}
+
+	@Override
+	public int size()
+	{
+		return getValueModel().size();
 	}
 }
