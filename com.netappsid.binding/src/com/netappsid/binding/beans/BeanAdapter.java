@@ -104,7 +104,7 @@ public class BeanAdapter extends Bean
 		if (collectionValueModel == null)
 		{
 			SimplePropertyAdapter propertyAdapter = getValueModel(propertyName);
-			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter);
+			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter, getChangeSupportFactory());
 			collectionValueModels.put(propertyName, collectionValueModel);
 		}
 

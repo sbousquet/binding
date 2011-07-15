@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
@@ -35,9 +36,9 @@ public abstract class AbstractCollectionValueModel<T extends ObservableCollectio
 	private final List<CollectionChangeListener> listeners;
 	private final CollectionChangeHandler listener;
 
-	public AbstractCollectionValueModel(SimplePropertyAdapter propertyAdapter)
+	public AbstractCollectionValueModel(SimplePropertyAdapter propertyAdapter, ChangeSupportFactory changeSupportFactory)
 	{
-		super(propertyAdapter.getBeanAdapter().getChangeSupportFactory());
+		super(changeSupportFactory);
 
 		this.propertyAdapter = propertyAdapter;
 		this.listener = new CollectionChangeHandler();

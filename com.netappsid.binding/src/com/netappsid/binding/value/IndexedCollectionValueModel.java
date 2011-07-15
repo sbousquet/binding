@@ -4,12 +4,13 @@ import java.util.List;
 
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
+import com.netappsid.binding.beans.support.ChangeSupportFactory;
 
 public class IndexedCollectionValueModel extends AbstractCollectionValueModel
 {
-	public IndexedCollectionValueModel(SimplePropertyAdapter propertyAdapter)
+	public IndexedCollectionValueModel(SimplePropertyAdapter propertyAdapter, ChangeSupportFactory changeSupportFactory)
 	{
-		super(propertyAdapter);
+		super(propertyAdapter, changeSupportFactory);
 	}
 
 	public Object get(Integer index)
