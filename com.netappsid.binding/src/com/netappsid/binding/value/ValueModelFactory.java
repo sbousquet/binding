@@ -2,7 +2,7 @@ package com.netappsid.binding.value;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public interface ValueModelFactory
+public interface ValueModelFactory<T extends ValueModel>
 {
-	ValueModel getValueModel(String propertyName);
+	T getValueModel(String propertyName);
 }

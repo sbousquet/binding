@@ -3,9 +3,8 @@ package com.netappsid.undoredo;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.value.ValueModelFactory;
 
-public abstract class AbstractUndoRedoValueModelFactory implements ValueModelFactory
+public abstract class AbstractUndoRedoValueModelFactory<T extends ValueModel> implements ValueModelFactory<T>
 {
-
 	private final ValueModelFactory delegate;
 	private final UndoRedoManager undoRedoManager;
 
@@ -16,16 +15,13 @@ public abstract class AbstractUndoRedoValueModelFactory implements ValueModelFac
 	}
 
 	@Override
-	public ValueModel getValueModel(String propertyName)
+	public T getValueModel(String propertyName)
 	{
-		ValueModel valueModel = getDelegate().getValueModel(propertyName);
+		T valueModel = (T) getDelegate().getValueModel(propertyName);
 		return wrap(valueModel);
 	}
 
-	public UndoRedoValueModel wrap(ValueModel valueModel)
-	{
-		return new UndoRedoValueModel(getUndoRedoManager(), valueModel);
-	}
+	protected abstract T wrap(T valueModel);
 
 	public UndoRedoManager getUndoRedoManager()
 	{

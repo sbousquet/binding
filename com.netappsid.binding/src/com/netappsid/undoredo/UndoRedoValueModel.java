@@ -2,10 +2,9 @@ package com.netappsid.undoredo;
 
 import java.beans.PropertyChangeListener;
 
-import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
 
-public class UndoRedoValueModel<T extends ValueModel & Observable> implements ValueModel, Observable
+public class UndoRedoValueModel<T extends ValueModel> implements ValueModel
 {
 	private final T valueModel;
 	private final UndoRedoManager undoRedoManager;
@@ -58,18 +57,6 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 	public ValueModel getDelegate()
 	{
 		return getValueModel();
-	}
-
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener arg0)
-	{
-		getValueModel().addPropertyChangeListener(arg0);
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener arg0)
-	{
-		getValueModel().removePropertyChangeListener(arg0);
 	}
 
 	protected UndoRedoManager getUndoRedoManager()

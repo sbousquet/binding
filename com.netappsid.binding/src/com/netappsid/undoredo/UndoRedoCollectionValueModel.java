@@ -1,14 +1,13 @@
 package com.netappsid.undoredo;
 
-import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.CollectionDifference;
 import com.netappsid.observable.ObservableCollection;
 
-public class UndoRedoCollectionValueModel<T extends CollectionValueModel & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel,
-		Observable
+public class UndoRedoCollectionValueModel<T extends CollectionValueModel> extends UndoRedoValueModel<T> implements CollectionValueModel
+
 {
 	private final CollectionChangeListener listener;
 
