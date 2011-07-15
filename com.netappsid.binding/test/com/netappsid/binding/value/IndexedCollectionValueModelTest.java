@@ -10,9 +10,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
+import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.ObservableCollections;
+import com.netappsid.observable.ObservableList;
 
 public class IndexedCollectionValueModelTest
 {
@@ -140,5 +143,56 @@ public class IndexedCollectionValueModelTest
 		indexedCollectionValueModel.addAll(added);
 		indexedCollectionValueModel.retainAll(Arrays.asList(firstObject));
 		assertEquals(1, indexedCollectionValueModel.size());
+	}
+
+	@Test
+	public void testExecuteBatchAction()
+	{
+		ClearAndAddAllBatchAction action = new ClearAndAddAllBatchAction(Arrays.asList(new Object()));
+		indexedCollectionValueModel.executeBatchAction(action);
+		assertEquals(1, indexedCollectionValueModel.size());
+	}
+
+	@Test
+	public void testToArray()
+	{
+		Object[] array = indexedCollectionValueModel.toArray();
+		assertArrayEquals(new Object[] { firstObject }, array);
+	}
+
+	@Test
+	public void testToArray_Overload()
+	{
+		Object[] array = indexedCollectionValueModel.toArray(new Object[] {});
+		assertArrayEquals(new Object[] { firstObject }, array);
+	}
+
+	@Test
+	public void testEnsureListenersOnNewCollection_AndSourceIsValueModel()
+	{
+		StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
+		
+		ObservableList<Object> oldList = ObservableCollections.newObservableArrayList();
+		ObservableList<Object> newList = ObservableCollections.newObservableArrayList();
+
+		ValueHolder valueHolder = new ValueHolder(changeSupportFactory, oldList);
+		
+		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
+		
+		CollectionChangeEventSpy eventSpy = new CollectionChangeEventSpy();
+		indexedCollectionValueModel.addCollectionChangeListener(eventSpy);
+
+		Object addedInOldList = new Object();
+		indexedCollectionValueModel.add(addedInOldList);
+		eventSpy.assertEvent(indexedCollectionValueModel, ImmutableList.of(addedInOldList), ImmutableList.of(), -1);
+
+		indexedCollectionValueModel.setValue(newList);
+
+		Object addedInNewList = new Object();
+		indexedCollectionValueModel.add(addedInNewList);
+		eventSpy.assertEvent(indexedCollectionValueModel, ImmutableList.of(addedInNewList), ImmutableList.of(), -1);
+
+		assertTrue("oldList must contain addedInOldList", oldList.contains(addedInOldList));
+		assertTrue("newList must contain addedInNewList", newList.contains(addedInNewList));
 	}
 }

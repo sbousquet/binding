@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.netappsid.binding.beans.CollectionValueModel;
+import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.CollectionDifference;
@@ -179,5 +180,23 @@ public class UndoRedoCollectionValueModel<T extends CollectionValueModel> extend
 	public int size()
 	{
 		return getValueModel().size();
+	}
+
+	@Override
+	public void executeBatchAction(BatchAction action)
+	{
+		getValueModel().executeBatchAction(action);
+	}
+
+	@Override
+	public Object[] toArray()
+	{
+		return getValueModel().toArray();
+	}
+
+	@Override
+	public Object[] toArray(Object[] a)
+	{
+		return getValueModel().toArray(a);
 	}
 }

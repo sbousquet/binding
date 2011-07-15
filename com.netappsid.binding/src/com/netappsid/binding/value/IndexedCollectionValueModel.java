@@ -2,18 +2,19 @@ package com.netappsid.binding.value;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
+import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
-import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
+import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.ObservableCollection;
+import com.netappsid.observable.ObservableList;
 
 public class IndexedCollectionValueModel extends AbstractCollectionValueModel<ObservableCollection, Integer>
 {
-	public IndexedCollectionValueModel(SimplePropertyAdapter propertyAdapter, ChangeSupportFactory changeSupportFactory)
+	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
 	{
-		super(propertyAdapter, changeSupportFactory);
+		super(valueModel, changeSupportFactory);
 	}
 
 	@Override
@@ -94,14 +95,14 @@ public class IndexedCollectionValueModel extends AbstractCollectionValueModel<Ob
 		return getList().size();
 	}
 
-	protected List getList()
+	protected ObservableList getList()
 	{
-		List list;
+		ObservableList list;
 		Object value = getValue();
 
-		if (value != null && List.class.isAssignableFrom(value.getClass()))
+		if (value != null && ObservableList.class.isAssignableFrom(value.getClass()))
 		{
-			list = (List) value;
+			list = (ObservableList) value;
 		}
 		else
 		{
@@ -109,5 +110,24 @@ public class IndexedCollectionValueModel extends AbstractCollectionValueModel<Ob
 		}
 
 		return list;
+	}
+
+	@Override
+	public void executeBatchAction(BatchAction action)
+	{
+		getList().executeBatchAction(action);
+		
+	}
+
+	@Override
+	public Object[] toArray()
+	{
+		return getList().toArray();
+	}
+
+	@Override
+	public Object[] toArray(Object[] a)
+	{
+		return getList().toArray(a);
 	}
 }

@@ -13,6 +13,7 @@ import org.mockito.InOrder;
 
 import com.google.common.collect.ImmutableList;
 import com.netappsid.binding.beans.CollectionValueModel;
+import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ListDifference;
@@ -180,5 +181,28 @@ public class UndoRedoCollectionValueModelTest
 		List retained = Arrays.asList(new Object(), new Object());
 		undoRedoCollectionValueModel.retainAll(retained);
 		verify(collectionValueModel).retainAll(retained);
+	}
+
+	@Test
+	public void testExecuteBatchAction()
+	{
+		ClearAndAddAllBatchAction action = new ClearAndAddAllBatchAction(Arrays.asList(new Object()));
+		undoRedoCollectionValueModel.executeBatchAction(action);
+		verify(collectionValueModel).executeBatchAction(action);
+	}
+
+	@Test
+	public void testToArray()
+	{
+		Object[] array = undoRedoCollectionValueModel.toArray();
+		verify(collectionValueModel).toArray();
+	}
+
+	@Test
+	public void testToArray_Overload()
+	{
+		Object[] targetArrayType = new Object[] {};
+		Object[] array = undoRedoCollectionValueModel.toArray(targetArrayType);
+		verify(collectionValueModel).toArray(targetArrayType);
 	}
 }
