@@ -5,8 +5,6 @@ import com.netappsid.binding.beans.CollectionValueModel;
 
 public interface ValueModelFactory
 {
-	boolean isCachingRequired();
-	
 	ValueModel getValueModel(String propertyName);
 
 	CollectionValueModel getCollectionValueModel(String propertyName);

@@ -15,12 +15,6 @@ public class UndoRedoValueModelFactory implements ValueModelFactory
 		this.undoRedoManager = undoRedoManager;
 		this.delegate = delegate;
 	}
-	
-	@Override
-	public boolean isCachingRequired()
-	{
-		return delegate.isCachingRequired();
-	}
 
 	@Override
 	public ValueModel getValueModel(String propertyName)
