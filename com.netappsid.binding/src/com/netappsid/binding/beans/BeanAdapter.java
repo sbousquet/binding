@@ -94,7 +94,7 @@ public class BeanAdapter extends Bean
 			propertyAdapters.put(propertyName, registeredPropertyAdapter);
 		}
 
-		return propertyAdapters.get(propertyName);
+		return registeredPropertyAdapter;
 	}
 
 	public CollectionValueModel getCollectionValueModel(String propertyName)

@@ -26,11 +26,6 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		return propertyName;
 	}
-	
-	BeanAdapter getBeanAdapter()
-	{
-		return beanAdapter;
-	}
 
 	public PropertyDescriptor getPropertyDescriptor()
 	{

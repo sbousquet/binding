@@ -21,11 +21,15 @@ public class IndexedCollectionValueModelTest
 {
 	private IndexedCollectionValueModel indexedCollectionValueModel;
 	private Object firstObject;
+	private Object added1;
+	private Object added2;
 
 	@Before
 	public void setup()
 	{
 		firstObject = new Object();
+		added1 = new Object();
+		added2 = new Object();
 		List collection = ObservableCollections.newObservableArrayList(firstObject);
 
 		SimplePropertyAdapter simplePropertyAdapter = mock(SimplePropertyAdapter.class);
@@ -70,24 +74,24 @@ public class IndexedCollectionValueModelTest
 	@Test
 	public void testAdd()
 	{
-		Object added = new Object();
-		indexedCollectionValueModel.add(added);
-		assertEquals(2, indexedCollectionValueModel.size());
+		indexedCollectionValueModel.add(added1);
+		assertTrue(indexedCollectionValueModel.contains(added1));
 	}
 
 	@Test
 	public void testAddAll()
 	{
-		List added = Arrays.asList(new Object(), new Object());
+		List added = Arrays.asList(added1, added2);
 		indexedCollectionValueModel.addAll(added);
-		assertEquals(3, indexedCollectionValueModel.size());
+		assertTrue(indexedCollectionValueModel.contains(added1));
+		assertTrue(indexedCollectionValueModel.contains(added2));
 	}
 
 	@Test
 	public void testClear()
 	{
 		indexedCollectionValueModel.clear();
-		assertEquals(0, indexedCollectionValueModel.size());
+		assertFalse(indexedCollectionValueModel.contains(firstObject));
 	}
 
 	@Test
@@ -99,10 +103,10 @@ public class IndexedCollectionValueModelTest
 	@Test
 	public void testContainsAll()
 	{
-		List added = Arrays.asList(new Object(), new Object());
+		List added = Arrays.asList(added1, added2);
 		indexedCollectionValueModel.clear();
 		indexedCollectionValueModel.addAll(added);
-		assertTrue("FirsObject must be found", indexedCollectionValueModel.containsAll(added));
+		assertTrue("All added must be found", indexedCollectionValueModel.containsAll(added));
 	}
 
 	@Test
@@ -130,27 +134,28 @@ public class IndexedCollectionValueModelTest
 	@Test
 	public void testRemoveAll()
 	{
-		List added = Arrays.asList(new Object(), new Object());
+		List added = Arrays.asList(added1, added2);
 		indexedCollectionValueModel.addAll(added);
 		indexedCollectionValueModel.removeAll(Arrays.asList(firstObject));
-		assertTrue(indexedCollectionValueModel.containsAll(added));
+		assertTrue("Only first object must be found", indexedCollectionValueModel.containsAll(added));
 	}
 
 	@Test
 	public void testRetainAll()
 	{
-		List added = Arrays.asList(new Object(), new Object());
+		List added = Arrays.asList(added1, added2);
 		indexedCollectionValueModel.addAll(added);
 		indexedCollectionValueModel.retainAll(Arrays.asList(firstObject));
-		assertEquals(1, indexedCollectionValueModel.size());
+		assertFalse(indexedCollectionValueModel.containsAll(added));
+		assertTrue(indexedCollectionValueModel.contains(firstObject));
 	}
 
 	@Test
 	public void testExecuteBatchAction()
 	{
-		ClearAndAddAllBatchAction action = new ClearAndAddAllBatchAction(Arrays.asList(new Object()));
+		ClearAndAddAllBatchAction action = new ClearAndAddAllBatchAction(Arrays.asList(added1));
 		indexedCollectionValueModel.executeBatchAction(action);
-		assertEquals(1, indexedCollectionValueModel.size());
+		assertTrue(indexedCollectionValueModel.contains(added1));
 	}
 
 	@Test

@@ -2,8 +2,6 @@ package com.netappsid.binding.beans;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
@@ -36,7 +34,6 @@ public abstract class AbstractCollectionValueModel<T extends ObservableCollectio
 	}
 
 	private final ValueModel valueModel;
-	private final List<CollectionChangeListener> listeners;
 	private final ModelCollectionChangeHandler modelCollectionListener;
 	private final DefaultObservableCollectionSupport defaultObservableCollectionSupport;
 
@@ -47,7 +44,6 @@ public abstract class AbstractCollectionValueModel<T extends ObservableCollectio
 		this.defaultObservableCollectionSupport = new DefaultObservableCollectionSupport(this);
 		this.valueModel = valueModel;
 		this.modelCollectionListener = new ModelCollectionChangeHandler();
-		this.listeners = new ArrayList<CollectionChangeListener>();
 
 		install((ObservableCollection) valueModel.getValue());
 
