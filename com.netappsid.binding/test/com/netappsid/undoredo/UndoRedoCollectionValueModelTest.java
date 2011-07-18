@@ -70,7 +70,7 @@ public class UndoRedoCollectionValueModelTest
 	}
 
 	@Test
-	public void testUndo()
+	public void testUndo_EnsureOperationNotTrackedByUndoRedoManager()
 	{
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(newObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
@@ -86,7 +86,7 @@ public class UndoRedoCollectionValueModelTest
 	}
 
 	@Test
-	public void testRedo()
+	public void testRedo_EnsureOperationNotTrackedByUndoRedoManager()
 	{
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(oldObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
