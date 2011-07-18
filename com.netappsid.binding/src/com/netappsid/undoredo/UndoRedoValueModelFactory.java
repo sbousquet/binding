@@ -1,35 +1,27 @@
 package com.netappsid.undoredo;
 
 import com.jgoodies.binding.value.ValueModel;
+import com.netappsid.binding.beans.CollectionValueModel;
+import com.netappsid.binding.value.CollectionValueModelFactory;
 import com.netappsid.binding.value.ValueModelFactory;
 
-public class UndoRedoValueModelFactory implements ValueModelFactory
+public class UndoRedoValueModelFactory extends AbstractUndoRedoValueModelFactory implements CollectionValueModelFactory
 {
-
-	private final ValueModelFactory delegate;
-	private final UndoRedoManager undoRedoManager;
-
 	public UndoRedoValueModelFactory(UndoRedoManager undoRedoManager, ValueModelFactory delegate)
 	{
-		this.undoRedoManager = undoRedoManager;
-		this.delegate = delegate;
-	}
-	
-	@Override
-	public boolean isCachingRequired()
-	{
-		return delegate.isCachingRequired();
+		super(undoRedoManager, delegate);
 	}
 
 	@Override
-	public ValueModel getValueModel(String propertyName)
+	protected UndoRedoValueModel wrap(ValueModel valueModel)
 	{
-		ValueModel valueModel = delegate.getValueModel(propertyName);
-		return wrap(valueModel);
+		return new UndoRedoValueModel(getUndoRedoManager(), valueModel);
 	}
 
-	public UndoRedoValueModel wrap(ValueModel valueModel)
+	@Override
+	public CollectionValueModel getCollectionValueModel(String propertyName)
 	{
-		return new UndoRedoValueModel(undoRedoManager, valueModel);
+		CollectionValueModel collectionValueModel = ((CollectionValueModelFactory) getDelegate()).getCollectionValueModel(propertyName);
+		return new UndoRedoCollectionValueModel(getUndoRedoManager(), collectionValueModel);
 	}
 }

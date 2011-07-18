@@ -26,12 +26,13 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		return propertyName;
 	}
-	
+
 	public PropertyDescriptor getPropertyDescriptor()
 	{
 		return getPropertyDescriptor(beanAdapter.getBean());
 	}
 
+	@Override
 	public Object getValue()
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
@@ -39,6 +40,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		return propertyDescriptor != null ? BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor) : null;
 	}
 
+	@Override
 	public void setValue(Object newValue)
 	{
 		PropertyDescriptor propertyDescriptor = getPropertyDescriptor();

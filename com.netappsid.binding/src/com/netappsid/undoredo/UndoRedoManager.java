@@ -11,18 +11,13 @@ public class UndoRedoManager
 
 	private int transactionCount = 0;
 
-	public void push(UndoRedoValueModel undoRedoValueModel, UndoRedoValue undoRedoValue)
+	public void push(UndoRedoOperation operation)
 	{
 		if (!isCurrentlyInTransaction())
 		{
 			getRedoableOperations().clear();
-			getOperations().addLast(createUndoRedoValueModelAction(undoRedoValueModel, undoRedoValue));
+			getOperations().addLast(operation);
 		}
-	}
-
-	public UndoRedoValueModelOperation createUndoRedoValueModelAction(UndoRedoValueModel undoRedoValueModel, UndoRedoValue undoRedoValue)
-	{
-		return new UndoRedoValueModelOperation(undoRedoValueModel, undoRedoValue);
 	}
 
 	public void undo()
@@ -166,5 +161,12 @@ public class UndoRedoManager
 	protected LinkedList<SavePoint> getSavePoints()
 	{
 		return savePoints;
+	}
+
+	public void reset()
+	{
+		getOperations().clear();
+		getRedoableOperations().clear();
+		getSavePoints().clear();
 	}
 }

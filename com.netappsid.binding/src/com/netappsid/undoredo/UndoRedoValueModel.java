@@ -2,72 +2,70 @@ package com.netappsid.undoredo;
 
 import java.beans.PropertyChangeListener;
 
-import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
 
-public class UndoRedoValueModel<T extends ValueModel & Observable> implements ValueModel, Observable
+public class UndoRedoValueModel<T extends ValueModel> implements ValueModel
 {
 	private final T valueModel;
-	private final UndoRedoManager manager;
+	private final UndoRedoManager undoRedoManager;
 
 	public UndoRedoValueModel(UndoRedoManager manager, T valueModel)
 	{
-		this.manager = manager;
+		this.undoRedoManager = manager;
 		this.valueModel = valueModel;
 	}
 
 	@Override
 	public void addValueChangeListener(PropertyChangeListener changeListener)
 	{
-		valueModel.addValueChangeListener(changeListener);
+		getValueModel().addValueChangeListener(changeListener);
 	}
 
 	@Override
 	public Object getValue()
 	{
-		return valueModel.getValue();
+		return getValueModel().getValue();
 	}
 
 	@Override
 	public void removeValueChangeListener(PropertyChangeListener changeListener)
 	{
-		valueModel.removeValueChangeListener(changeListener);
+		getValueModel().removeValueChangeListener(changeListener);
 	}
 
 	@Override
 	public void setValue(Object value)
 	{
-		UndoRedoValue undoRedoAction = new UndoRedoValue(valueModel.getValue(), value);
-		manager.push(this, undoRedoAction);
-		manager.beginTransaction();
-		valueModel.setValue(value);
-		manager.endTransaction();
+		UndoRedoValue undoRedoValue = new UndoRedoValue(getValueModel().getValue(), value);
+		UndoRedoValueModelOperation undoRedoValueModelOperation = new UndoRedoValueModelOperation(this, undoRedoValue);
+		getUndoRedoManager().push(undoRedoValueModelOperation);
+		getUndoRedoManager().beginTransaction();
+		getValueModel().setValue(value);
+		getUndoRedoManager().endTransaction();
 	}
 
 	public void redo(UndoRedoValue undoRedoValue)
 	{
-		valueModel.setValue(undoRedoValue.getNewValue());
+		getValueModel().setValue(undoRedoValue.getNewValue());
 	}
 
 	public void undo(UndoRedoValue undoRedoValue)
 	{
-		valueModel.setValue(undoRedoValue.getOldValue());
+		getValueModel().setValue(undoRedoValue.getOldValue());
 	}
 
 	public ValueModel getDelegate()
 	{
+		return getValueModel();
+	}
+
+	protected UndoRedoManager getUndoRedoManager()
+	{
+		return undoRedoManager;
+	}
+
+	protected T getValueModel()
+	{
 		return valueModel;
-	}
-
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener arg0)
-	{
-		valueModel.addPropertyChangeListener(arg0);
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener arg0)
-	{
-		valueModel.removePropertyChangeListener(arg0);
 	}
 }

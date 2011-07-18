@@ -25,13 +25,12 @@ public class UndoRedoManagerTest
 		undoRedoValueModelOperation = spy(new UndoRedoValueModelOperation(undoRedoValueModel, undoRedoValue));
 
 		manager = spy(new UndoRedoManager());
-		doReturn(undoRedoValueModelOperation).when(manager).createUndoRedoValueModelAction(undoRedoValueModel, undoRedoValue);
 	}
 
 	@Test
 	public void testPush_NotInTransaction()
 	{
-		manager.push(undoRedoValueModel, undoRedoValue);
+		manager.push(undoRedoValueModelOperation);
 		assertEquals("One operations must be contained in operations", 1, manager.getOperations().size());
 		assertTrue("No operation must be contained in redoableOperations", manager.getRedoableOperations().isEmpty());
 	}
@@ -40,7 +39,7 @@ public class UndoRedoManagerTest
 	public void testPush_DuringInTransaction()
 	{
 		manager.beginTransaction();
-		manager.push(undoRedoValueModel, undoRedoValue);
+		manager.push(undoRedoValueModelOperation);
 		assertTrue("No operation must be contained in operations", manager.getOperations().isEmpty());
 		assertTrue("No operation must be contained in redoableOperations", manager.getRedoableOperations().isEmpty());
 	}
@@ -52,7 +51,7 @@ public class UndoRedoManagerTest
 		operations.add(undoRedoValueModelOperation);
 		doReturn(operations).when(manager).getRedoableOperations();
 
-		manager.push(undoRedoValueModel, undoRedoValue);
+		manager.push(undoRedoValueModelOperation);
 		assertTrue("RedoableOperations must be cleared", operations.isEmpty());
 	}
 
@@ -64,7 +63,7 @@ public class UndoRedoManagerTest
 		doReturn(operations).when(manager).getRedoableOperations();
 
 		manager.beginTransaction();
-		manager.push(undoRedoValueModel, undoRedoValue);
+		manager.push(undoRedoValueModelOperation);
 		assertEquals("RedoableOperations must not be cleared", 1, operations.size());
 	}
 
