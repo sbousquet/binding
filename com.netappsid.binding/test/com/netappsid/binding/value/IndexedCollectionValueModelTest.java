@@ -128,7 +128,7 @@ public class IndexedCollectionValueModelTest
 	public void testRemove()
 	{
 		indexedCollectionValueModel.remove(firstObject);
-		assertEquals(0, indexedCollectionValueModel.size());
+		assertFalse(indexedCollectionValueModel.contains(firstObject));
 	}
 
 	@Test

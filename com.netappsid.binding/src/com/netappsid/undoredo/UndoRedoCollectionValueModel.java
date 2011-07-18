@@ -50,16 +50,17 @@ public class UndoRedoCollectionValueModel<T extends CollectionValueModel> extend
 
 	public void undo(CollectionChangeEvent event)
 	{
-		getValueModel().removeCollectionChangeListener(listener);
-
-		CollectionDifference difference = event.getDifference();
-
-		// Always use the ValueModel's value since when an entity is reloaded, a new collection
-		// containing the same objects is recreated
-		ObservableCollection source = (ObservableCollection) getValueModel().getValue();
-
 		try
 		{
+
+			getValueModel().removeCollectionChangeListener(listener);
+
+			CollectionDifference difference = event.getDifference();
+
+			// Always use the ValueModel's value since when an entity is reloaded, a new collection
+			// containing the same objects is recreated
+			ObservableCollection source = (ObservableCollection) getValueModel().getValue();
+
 			for (Object added : difference.getAdded())
 			{
 				source.remove(added);
