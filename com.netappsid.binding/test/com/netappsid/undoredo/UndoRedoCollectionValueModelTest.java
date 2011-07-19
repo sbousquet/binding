@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 import com.google.common.collect.ImmutableList;
+import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
@@ -51,6 +52,12 @@ public class UndoRedoCollectionValueModelTest
 		newObject = new Object();
 
 		difference = new ListDifference(ImmutableList.of(oldObject), ImmutableList.of(newObject));
+	}
+
+	@Test
+	public void testEnsureImplementsObservable()
+	{
+		assertTrue("Must implement Observable in order to be able to bind to it via our jgoodies", undoRedoCollectionValueModel instanceof Observable);
 	}
 
 	@Test
