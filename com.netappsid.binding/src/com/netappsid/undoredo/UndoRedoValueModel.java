@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.SwingIdentityPropertyChangeSupport;
+import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.observable.ObservableByName;
 
 public class UndoRedoValueModel<T extends ValueModel & Observable> implements ValueModel, ObservableByName
@@ -35,7 +36,7 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 	@Override
 	public void addValueChangeListener(PropertyChangeListener listener)
 	{
-		addPropertyChangeListener("value", listener);
+		addPropertyChangeListener(AbstractValueModel.PROPERTYNAME_VALUE, listener);
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 	@Override
 	public void removeValueChangeListener(PropertyChangeListener listener)
 	{
-		removePropertyChangeListener("value", listener);
+		removePropertyChangeListener(AbstractValueModel.PROPERTYNAME_VALUE, listener);
 	}
 
 	@Override
