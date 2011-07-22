@@ -1,11 +1,8 @@
 package com.netappsid.binding.beans;
 
 import com.jgoodies.binding.value.ValueModel;
-import com.netappsid.observable.ObservableCollection;
+import com.netappsid.observable.ObservableList;
 
-public interface CollectionValueModel<K> extends ValueModel, ObservableCollection
+public interface CollectionValueModel<T> extends ValueModel, ObservableList<T>
 {
-	public Object get(K key);
-
-	public void set(K key, Object newValue);
 }

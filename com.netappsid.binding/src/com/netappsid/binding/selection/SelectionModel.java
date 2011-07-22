@@ -17,7 +17,11 @@ public interface SelectionModel
 	boolean hasSelection();
 	void removeSelectionChangeListener(PropertyChangeListener listener);
 	void setSelection();
+	void setSelectedItem(Object selection);
+
+	void setSelectedItems(Object[] selections);
 	void setSelection(Integer index);
 	void setSelection(SortedSet<Integer> indexes);
+
 	void setSelectionInterval(Integer index0, Integer index1);
 }

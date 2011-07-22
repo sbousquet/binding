@@ -10,8 +10,10 @@ import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.DefaultObservableCollectionSupport;
 import com.netappsid.observable.ObservableCollection;
+import com.netappsid.observable.ObservableCollections;
+import com.netappsid.observable.ObservableList;
 
-public abstract class AbstractCollectionValueModel<T extends ObservableCollection, K> extends AbstractValueModel implements CollectionValueModel<K>
+public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E>> extends AbstractValueModel implements CollectionValueModel<E>
 {
 	private final class ModelCollectionChangeHandler implements CollectionChangeListener
 	{
@@ -68,13 +70,13 @@ public abstract class AbstractCollectionValueModel<T extends ObservableCollectio
 	}
 
 	@Override
-	public void addCollectionChangeListener(CollectionChangeListener listener)
+	public void addCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
 		defaultObservableCollectionSupport.addCollectionChangeListener(listener);
 	}
 
 	@Override
-	public void removeCollectionChangeListener(CollectionChangeListener listener)
+	public void removeCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
 		defaultObservableCollectionSupport.removeCollectionChangeListener(listener);
 	}
@@ -92,9 +94,10 @@ public abstract class AbstractCollectionValueModel<T extends ObservableCollectio
 	}
 
 	@Override
-	public Object getValue()
+	public T getValue()
 	{
-		return valueModel.getValue();
+		Object value = valueModel.getValue();
+		return (T) ((value == null) ? ObservableCollections.newObservableArrayList() : value);
 	}
 
 	@Override

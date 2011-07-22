@@ -48,18 +48,6 @@ public class DefaultPresentationModel extends PresentationModel
 	}
 
 	@Override
-	public void addBeanPropertyChangeListener(PropertyChangeListener listener)
-	{
-		beanAdapter.addBeanPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener)
-	{
-		beanAdapter.addBeanPropertyChangeListener(propertyName, listener);
-	}
-
-	@Override
 	public Object getBean()
 	{
 		return beanAdapter.getBean();
@@ -69,18 +57,6 @@ public class DefaultPresentationModel extends PresentationModel
 	public ValueModel getBeanChannel()
 	{
 		return beanAdapter.getBeanChannel();
-	}
-
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners()
-	{
-		return beanAdapter.getBeanPropertyChangeListeners();
-	}
-
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners(String propertyName)
-	{
-		return beanAdapter.getBeanPropertyChangeListeners(propertyName);
 	}
 
 	@Override
@@ -176,6 +152,7 @@ public class DefaultPresentationModel extends PresentationModel
 	 */
 	private final class BeanChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			fireIdentityPropertyChange(PROPERTYNAME_BEAN, evt.getOldValue(), evt.getNewValue());
@@ -184,6 +161,7 @@ public class DefaultPresentationModel extends PresentationModel
 
 	private class UpdateStateOnBeanPropertyChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			if (evt instanceof StatePropertyChangeEvent && ((StatePropertyChangeEvent) evt).isAffectingState())

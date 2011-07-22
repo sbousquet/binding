@@ -2,132 +2,177 @@ package com.netappsid.binding.value;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
-import com.netappsid.observable.ObservableCollection;
 import com.netappsid.observable.ObservableList;
 
-public class IndexedCollectionValueModel extends AbstractCollectionValueModel<ObservableCollection, Integer>
+public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel<T, ObservableList<T>> implements ObservableList<T>
 {
-	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
+
+	@Override
+	public void add(int index, T element)
 	{
-		super(valueModel, changeSupportFactory);
+		getValue().add(index, element);
 	}
 
 	@Override
-	public Object get(Integer index)
+	public boolean add(T e)
 	{
-		return getList().get(index);
+		return getValue().add(e);
 	}
 
 	@Override
-	public void set(Integer key, Object newValue)
+	public boolean addAll(Collection<? extends T> c)
 	{
-		getList().set(key, newValue);
+		return getValue().addAll(c);
 	}
 
 	@Override
-	public boolean add(Object e)
+	public boolean addAll(int index, Collection<? extends T> c)
 	{
-		return getList().add(e);
-	}
-
-	@Override
-	public boolean addAll(Collection c)
-	{
-		return getList().addAll(c);
+		return getValue().addAll(index, c);
 	}
 
 	@Override
 	public void clear()
 	{
-		getList().clear();
+		getValue().clear();
 	}
 
 	@Override
-	public boolean contains(Object e)
+	public boolean contains(Object o)
 	{
-		return getList().contains(e);
+		return getValue().contains(o);
 	}
 
 	@Override
-	public boolean containsAll(Collection c)
+	public boolean containsAll(Collection<?> c)
 	{
-		return getList().containsAll(c);
+		return getValue().containsAll(c);
 	}
 
 	@Override
-	public boolean isEmpty()
+	public boolean equals(Object o)
 	{
-		return getList().isEmpty();
-	}
-
-	@Override
-	public Iterator iterator()
-	{
-		return getList().iterator();
-	}
-
-	@Override
-	public boolean remove(Object e)
-	{
-		return getList().remove(e);
-	}
-
-	@Override
-	public boolean removeAll(Collection c)
-	{
-		return getList().removeAll(c);
-	}
-
-	@Override
-	public boolean retainAll(Collection c)
-	{
-		return getList().retainAll(c);
-	}
-
-	@Override
-	public int size()
-	{
-		return getList().size();
-	}
-
-	protected ObservableList getList()
-	{
-		ObservableList list;
-		Object value = getValue();
-
-		if (value != null && ObservableList.class.isAssignableFrom(value.getClass()))
-		{
-			list = (ObservableList) value;
-		}
-		else
-		{
-			throw new NullPointerException("The collection must not be null");
-		}
-
-		return list;
+		return getValue().equals(o);
 	}
 
 	@Override
 	public void executeBatchAction(BatchAction action)
 	{
-		getList().executeBatchAction(action);
-		
+		getValue().executeBatchAction(action);
+	}
+
+	@Override
+	public T get(int index)
+	{
+		return getValue().get(index);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return getValue().hashCode();
+	}
+
+	@Override
+	public int indexOf(Object o)
+	{
+		return getValue().indexOf(o);
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return getValue().isEmpty();
+	}
+
+	@Override
+	public Iterator<T> iterator()
+	{
+		return getValue().iterator();
+	}
+
+	@Override
+	public int lastIndexOf(Object o)
+	{
+		return getValue().lastIndexOf(o);
+	}
+
+	@Override
+	public ListIterator<T> listIterator()
+	{
+		return getValue().listIterator();
+	}
+
+	@Override
+	public ListIterator<T> listIterator(int index)
+	{
+		return getValue().listIterator(index);
+	}
+
+	@Override
+	public T remove(int index)
+	{
+		return getValue().remove(index);
+	}
+
+	@Override
+	public boolean remove(Object o)
+	{
+		return getValue().remove(o);
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c)
+	{
+		return getValue().removeAll(c);
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c)
+	{
+		return getValue().retainAll(c);
+	}
+
+	@Override
+	public T set(int index, T element)
+	{
+		return getValue().set(index, element);
+	}
+
+	@Override
+	public int size()
+	{
+		return getValue().size();
+	}
+
+	@Override
+	public List<T> subList(int fromIndex, int toIndex)
+	{
+		return getValue().subList(fromIndex, toIndex);
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return getList().toArray();
+		return getValue().toArray();
 	}
 
 	@Override
-	public Object[] toArray(Object[] a)
+	public <T> T[] toArray(T[] a)
 	{
-		return getList().toArray(a);
+		return getValue().toArray(a);
 	}
+
+	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
+	{
+		super(valueModel, changeSupportFactory);
+	}
+
 }

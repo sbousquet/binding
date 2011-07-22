@@ -99,59 +99,6 @@ public abstract class PresentationModel extends Bean
 	
 	/**
 	 * <p>
-	 * Adds a PropertyChangeListener to the list of bean listeners. The listener is registered for all bound properties of the target bean.
-	 * </p>
-	 * 
-	 * <p>
-	 * The listener will be notified if and only if this BeanAdapter's current bean changes a property. It'll not be notified if the bean changes.
-	 * </p>
-	 * 
-	 * <p>
-	 * If listener is {@code null}, no exception is thrown and no action is performed.
-	 * </p>
-	 * 
-	 * @param listener
-	 *            the PropertyChangeListener to be added
-	 * 
-	 * @see #removeBeanPropertyChangeListener(PropertyChangeListener)
-	 * @see #removeBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #addBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #getBeanPropertyChangeListeners()
-	 */
-	public abstract void addBeanPropertyChangeListener(PropertyChangeListener listener);
-
-	/**
-	 * <p>
-	 * Adds a PropertyChangeListener to the list of bean listeners for a specific property. The specified property may be user-defined.
-	 * </p>
-	 * 
-	 * <p>
-	 * The listener will be notified if and only if this BeanAdapter's current bean changes the specified property. It'll not be notified if the bean changes.
-	 * If you want to observe property changes and bean changes, you may observe the ValueModel that adapts this property - as returned by
-	 * <code>#getValueModel(String)</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * Note that if the bean is inheriting a bound property, then no event will be fired in response to a change in the inherited property.
-	 * </p>
-	 * 
-	 * <p>
-	 * If listener is {@code null}, no exception is thrown and no action is performed.
-	 * </p>
-	 * 
-	 * @param propertyName
-	 *            one of the property names listed above
-	 * @param listener
-	 *            the PropertyChangeListener to be added
-	 * 
-	 * @see #removeBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #addBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #getBeanPropertyChangeListeners(String)
-	 */
-	public abstract void addBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener);
-
-	/**
-	 * <p>
 	 * Removes a PropertyChangeListener from the list of bean listeners. This method should be used to remove PropertyChangeListeners that were registered for
 	 * all bound properties of the target bean.
 	 * </p>
@@ -190,35 +137,6 @@ public abstract class PresentationModel extends Bean
 	 * @see #getBeanPropertyChangeListeners(String)
 	 */
 	public abstract void removeBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener);
-	
-	/**
-	 * <p>
-	 * Returns an array of all the property change listeners registered on this component.
-	 * </p>
-	 * 
-	 * @return all of this component's <code>PropertyChangeListener</code>s or an empty array if no property change listeners are currently registered
-	 * 
-	 * @see #addBeanPropertyChangeListener(PropertyChangeListener)
-	 * @see #removeBeanPropertyChangeListener(PropertyChangeListener)
-	 * @see #getBeanPropertyChangeListeners(String)
-	 * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners()
-	 */
-	public abstract PropertyChangeListener[] getBeanPropertyChangeListeners();
-
-	/**
-	 * <p>
-	 * Returns an array of all the listeners which have been associated with the named property.
-	 * </p>
-	 * 
-	 * @param propertyName
-	 *            the name of the property to lookup listeners
-	 * @return all of the <code>PropertyChangeListeners</code> associated with the named property or an empty array if no listeners have been added
-	 * 
-	 * @see #addBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #removeBeanPropertyChangeListener(String, PropertyChangeListener)
-	 * @see #getBeanPropertyChangeListeners()
-	 */
-	public abstract PropertyChangeListener[] getBeanPropertyChangeListeners(String propertyName);
 	
 	/**
 	 * <p>

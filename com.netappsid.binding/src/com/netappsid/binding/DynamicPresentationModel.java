@@ -19,8 +19,8 @@ public class DynamicPresentationModel extends PresentationModel
 {
 	private final PropertyChangeListener mappedValueChangeHandler = new MappedValueChangeHandler();
 
-	private ValueModel mapChannel;
-	private PropertyChangeSupport propertyChangeSupport;
+	private final ValueModel mapChannel;
+	private final PropertyChangeSupport propertyChangeSupport;
 	private Map<String, ValueModel> valueModels;
 	private Map<ValueModel, String> valueModelNames;
 
@@ -45,18 +45,6 @@ public class DynamicPresentationModel extends PresentationModel
 	}
 
 	@Override
-	public void addBeanPropertyChangeListener(PropertyChangeListener listener)
-	{
-		propertyChangeSupport.addPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener)
-	{
-		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-	}
-
-	@Override
 	public Object getBean()
 	{
 		return getBeanChannel().getValue();
@@ -66,18 +54,6 @@ public class DynamicPresentationModel extends PresentationModel
 	public ValueModel getBeanChannel()
 	{
 		return mapChannel;
-	}
-
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners()
-	{
-		return propertyChangeSupport.getPropertyChangeListeners();
-	}
-
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners(String propertyName)
-	{
-		return propertyChangeSupport.getPropertyChangeListeners(propertyName);
 	}
 
 	@Override
@@ -223,6 +199,7 @@ public class DynamicPresentationModel extends PresentationModel
 
 	private final class MapChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt)
 		{
@@ -247,6 +224,7 @@ public class DynamicPresentationModel extends PresentationModel
 
 	private final class MappedValueChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt)
 		{

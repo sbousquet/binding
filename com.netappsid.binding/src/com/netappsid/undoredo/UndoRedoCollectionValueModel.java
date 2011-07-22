@@ -2,6 +2,8 @@ package com.netappsid.undoredo;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
@@ -12,8 +14,7 @@ import com.netappsid.observable.CollectionDifference;
 import com.netappsid.observable.DefaultObservableCollectionSupport;
 import com.netappsid.observable.ObservableCollection;
 
-public class UndoRedoCollectionValueModel<T extends CollectionValueModel & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel
-
+public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel<E>
 {
 	private final class DelegateCollectionValueModelCollectionChangeListener implements CollectionChangeListener
 	{
@@ -113,19 +114,20 @@ public class UndoRedoCollectionValueModel<T extends CollectionValueModel & Obser
 	}
 
 	@Override
-	public Object get(Object key)
+	public E get(int index)
 	{
-		return getValueModel().get(key);
+		return getValueModel().get(index);
+	}
+
+
+	@Override
+	public E set(int index, E newValue)
+	{
+		return getValueModel().set(index, newValue);
 	}
 
 	@Override
-	public void set(Object key, Object newValue)
-	{
-		getValueModel().set(key, newValue);
-	}
-
-	@Override
-	public boolean add(Object e)
+	public boolean add(E e)
 	{
 		return getValueModel().add(e);
 	}
@@ -206,5 +208,53 @@ public class UndoRedoCollectionValueModel<T extends CollectionValueModel & Obser
 	public Object[] toArray(Object[] a)
 	{
 		return getValueModel().toArray(a);
+	}
+
+	@Override
+	public void add(int index, E element)
+	{
+		getValueModel().add(index, element);
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends E> c)
+	{
+		return getValueModel().addAll(index, c);
+	}
+
+	@Override
+	public int indexOf(Object o)
+	{
+		return getValueModel().indexOf(o);
+	}
+
+	@Override
+	public int lastIndexOf(Object o)
+	{
+		return getValueModel().lastIndexOf(o);
+	}
+
+	@Override
+	public ListIterator<E> listIterator()
+	{
+		return getValueModel().listIterator();
+	}
+
+	@Override
+	public ListIterator<E> listIterator(int index)
+	{
+		return getValueModel().listIterator(index);
+	}
+
+	@Override
+	public E remove(int index)
+	{
+		return getValueModel().remove(index);
+	}
+
+	@Override
+	public List<E> subList(int fromIndex, int toIndex)
+	{
+		return getValueModel().subList(fromIndex, toIndex);
 	}
 }

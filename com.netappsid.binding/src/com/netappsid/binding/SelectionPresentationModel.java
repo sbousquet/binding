@@ -28,7 +28,7 @@ public class SelectionPresentationModel extends PresentationModel
 	public static final String DEFAULT_SELECTION = "selected";
 	public static final String PROPERTYNAME_BEAN_LIST = "beanList";
 	
-	private ValueModel beanListChannel;
+	private final ValueModel beanListChannel;
 	private Map<String, SelectionModel> selectionModels;
 
 	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass)
@@ -48,26 +48,6 @@ public class SelectionPresentationModel extends PresentationModel
 		setBeanClass(beanClass);
 	}
 
-	@Override
-	public void addBeanPropertyChangeListener(PropertyChangeListener listener)
-	{
-		getSubModel(DEFAULT_SELECTION).addBeanPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener)
-	{
-		int index = propertyName.indexOf('.');
-
-		if (index != -1)
-		{
-			getSubModel(propertyName.substring(0, index)).addBeanPropertyChangeListener(propertyName.substring(index + 1, propertyName.length()), listener);
-		}
-		else
-		{
-			throw new IllegalArgumentException("Property name must start with a selection key.");
-		}
-	}
 
 	@Override
 	public Object getBean()
@@ -91,27 +71,6 @@ public class SelectionPresentationModel extends PresentationModel
 		return beanListChannel;
 	}
 
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners()
-	{
-		return getSelectedBeanPropertyChangeListeners(DEFAULT_SELECTION);
-	}
-
-	@Override
-	public PropertyChangeListener[] getBeanPropertyChangeListeners(String propertyName)
-	{
-		int index = propertyName.indexOf('.');
-
-		if (index != -1)
-		{
-			return getSubModel(propertyName.substring(0, index)).getBeanPropertyChangeListeners(propertyName.substring(index + 1, propertyName.length()));
-		}
-		else
-		{
-			throw new IllegalArgumentException("Property name must start with a selection key.");
-		}
-	}
-
 	public Object getSelectedBean(String selectionKey)
 	{
 		return getSubModel(selectionKey).getBean();
@@ -120,11 +79,6 @@ public class SelectionPresentationModel extends PresentationModel
 	public ValueModel getSelectedBeanChannel(String selectionKey)
 	{
 		return getSubModel(selectionKey).getBeanChannel();
-	}
-
-	public PropertyChangeListener[] getSelectedBeanPropertyChangeListeners(String selectionKey)
-	{
-		return getSubModel(selectionKey).getBeanPropertyChangeListeners();
 	}
 
 	public SelectionModel getSelectionModel()
@@ -138,7 +92,7 @@ public class SelectionPresentationModel extends PresentationModel
 
 		if (selectionModel == null)
 		{
-			selectionModel = new SelectionHolder(getChangeSupportFactory());
+			selectionModel = new SelectionHolder((List<Object>) beanListChannel.getValue(), getChangeSupportFactory());
 			selectionModel.addSelectionChangeListener(new SelectionChangeHandler(selectionKey));
 			getSelectionModels().put(selectionKey, selectionModel);
 		}
