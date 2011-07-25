@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.netappsid.binding.beans.BeanAdapterTest.PropertyChangeListenerSpy;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
@@ -170,6 +171,25 @@ public class IndexedCollectionValueModelTest
 	{
 		Object[] array = indexedCollectionValueModel.toArray(new Object[] {});
 		assertArrayEquals(new Object[] { firstObject }, array);
+	}
+
+	@Test
+	public void testValueChange_EnsureSourceIsValueModel()
+	{
+		StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
+
+		ObservableList<Object> oldList = ObservableCollections.newObservableArrayList(added1);
+		ObservableList<Object> newList = ObservableCollections.newObservableArrayList(added2);
+
+		ValueHolder valueHolder = new ValueHolder(changeSupportFactory, oldList);
+
+		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
+
+		PropertyChangeListenerSpy eventSpy = new PropertyChangeListenerSpy();
+		indexedCollectionValueModel.addValueChangeListener(eventSpy);
+		indexedCollectionValueModel.setValue(newList);
+
+		assertTrue("Source must be the ValueModel", eventSpy.getFiredEvents().get(0).getSource().equals(indexedCollectionValueModel));
 	}
 
 	@Test

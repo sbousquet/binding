@@ -32,6 +32,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		{
 			uninstall((T) evt.getOldValue());
 			install((T) evt.getNewValue());
+			AbstractCollectionValueModel.this.fireValueChange(evt.getOldValue(), evt.getNewValue());
 		}
 	}
 
@@ -79,18 +80,6 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	public void removeCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
 		defaultObservableCollectionSupport.removeCollectionChangeListener(listener);
-	}
-
-	@Override
-	public void addValueChangeListener(PropertyChangeListener listener)
-	{
-		valueModel.addValueChangeListener(listener);
-	}
-
-	@Override
-	public void removeValueChangeListener(PropertyChangeListener listener)
-	{
-		valueModel.removeValueChangeListener(listener);
 	}
 
 	@Override

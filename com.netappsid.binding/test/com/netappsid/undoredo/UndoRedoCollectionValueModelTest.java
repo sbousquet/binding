@@ -33,7 +33,6 @@ public class UndoRedoCollectionValueModelTest
 	private ListDifference difference;
 	private Object firstObject;
 
-
 	@Before
 	public void setUp()
 	{
@@ -61,33 +60,37 @@ public class UndoRedoCollectionValueModelTest
 	}
 
 	@Test
-	public void testAddCollectionChangeListener()
+	public void testAddCollectionChangeListener_EnsureNotRegisteredToDelegate()
 	{
 		undoRedoCollectionValueModel.addCollectionChangeListener(listener);
 
-		verify(collectionValueModel).addCollectionChangeListener(listener);
+		verify(collectionValueModel, never()).addCollectionChangeListener(listener);
 	}
 
 	@Test
-	public void testRemoveCollectionChangeListener()
+	public void testRemoveCollectionChangeListener_EnsureNotRegisteredToDelegate()
 	{
 		undoRedoCollectionValueModel.removeCollectionChangeListener(listener);
 
-		verify(collectionValueModel).removeCollectionChangeListener(listener);
+		verify(collectionValueModel, never()).removeCollectionChangeListener(listener);
 	}
 
 	@Test
 	public void testUndo_EnsureOperationNotTrackedByUndoRedoManager()
 	{
+		// Reset since CollectionChange is registered in constructor once and we only want ton ensure no more
+		// listeners are added at this point
+		reset(collectionValueModel);
+
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(newObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
 		undoRedoCollectionValueModel.undo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel, never()).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
-		
+		inOrder.verify(collectionValueModel, never()).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+
 		assertTrue(newObservableArrayList.contains(oldObject));
 		assertFalse(newObservableArrayList.contains(newObject));
 	}
@@ -95,14 +98,18 @@ public class UndoRedoCollectionValueModelTest
 	@Test
 	public void testRedo_EnsureOperationNotTrackedByUndoRedoManager()
 	{
+		// Reset since CollectionChange is registered in constructor once and we only want ton ensure no more
+		// listeners are added at this point
+		reset(collectionValueModel);
+
 		ObservableList<Object> newObservableArrayList = ObservableCollections.newObservableArrayList(oldObject);
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
 		undoRedoCollectionValueModel.redo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel, never()).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel, never()).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
 		assertFalse(newObservableArrayList.contains(oldObject));
 		assertTrue(newObservableArrayList.contains(newObject));
