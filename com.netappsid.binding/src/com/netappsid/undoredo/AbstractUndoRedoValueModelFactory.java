@@ -1,5 +1,8 @@
 package com.netappsid.undoredo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.value.ValueModelFactory;
 
@@ -7,6 +10,7 @@ public abstract class AbstractUndoRedoValueModelFactory<T extends ValueModel> im
 {
 	private final ValueModelFactory delegate;
 	private final UndoRedoManager undoRedoManager;
+	private final Map<String, T> valueModelCache = new HashMap<String, T>();
 
 	public AbstractUndoRedoValueModelFactory(UndoRedoManager undoRedoManager, ValueModelFactory delegate)
 	{
@@ -17,8 +21,15 @@ public abstract class AbstractUndoRedoValueModelFactory<T extends ValueModel> im
 	@Override
 	public T getValueModel(String propertyName)
 	{
-		T valueModel = (T) getDelegate().getValueModel(propertyName);
-		return wrap(valueModel);
+		T returnedValueModel = valueModelCache.get(propertyName);
+
+		if (returnedValueModel == null)
+		{
+			T valueModel = (T) getDelegate().getValueModel(propertyName);
+			returnedValueModel = wrap(valueModel);
+			valueModelCache.put(propertyName, returnedValueModel);
+		}
+		return returnedValueModel;
 	}
 
 	protected abstract T wrap(T valueModel);
