@@ -219,9 +219,9 @@ public class BeanAdapter extends Bean
 
 		private void forwardAllAdaptedValuesChanged(Object oldBean, Object newBean)
 		{
-			for (Object adapter : propertyAdapters.values().toArray())
+			for (SimplePropertyAdapter adapter : propertyAdapters.values())
 			{
-				((SimplePropertyAdapter) adapter).setBean(oldBean, newBean);
+				adapter.setBean(oldBean, newBean);
 			}
 		}
 	}
@@ -250,9 +250,9 @@ public class BeanAdapter extends Bean
 		{
 			final Object currentBean = getBean();
 
-			for (Object adapter : propertyAdapters.values().toArray())
+			for (SimplePropertyAdapter adapter : propertyAdapters.values())
 			{
-				((SimplePropertyAdapter) adapter).fireChange(currentBean);
+				adapter.fireChange(currentBean);
 			}
 		}
 	}
