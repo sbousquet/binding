@@ -1,9 +1,6 @@
 package com.netappsid.binding.beans;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +11,7 @@ import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.binding.value.ValueHolder;
 import com.netappsid.test.beans.TestBean;
+import com.netappsid.test.tools.PropertyChangeAssertion;
 
 public class BeanAdapterTest
 {
@@ -127,7 +125,7 @@ public class BeanAdapterTest
 	{
 		final TestBean bean = new TestBean("1");
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class);
-		final SimplePropertyAdapter propertyAdapter = (SimplePropertyAdapter) adapter.getValueModel(TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter propertyAdapter = adapter.getValueModel(TestBean.PROPERTYNAME_PROPERTY1);
 
 		bean.setProperty1("TEST_GET_VALUE_MODEL");
 
@@ -145,7 +143,7 @@ public class BeanAdapterTest
 	@Test
 	public void testAddBeanPropertyChangeListener()
 	{
-		final PropertyChangeListener listener = new PropertyChangeListenerSpy();
+		final PropertyChangeListener listener = new PropertyChangeAssertion();
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class);
 
 		adapter.addBeanPropertyChangeListener(listener);
@@ -155,7 +153,7 @@ public class BeanAdapterTest
 	@Test
 	public void testAddBeanPropertyChangeListener_SpecificProperty()
 	{
-		final PropertyChangeListener listener = new PropertyChangeListenerSpy();
+		final PropertyChangeListener listener = new PropertyChangeAssertion();
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class);
 
 		adapter.addBeanPropertyChangeListener(TestBean.PROPERTYNAME_PROPERTY1, listener);
@@ -166,7 +164,7 @@ public class BeanAdapterTest
 	@Test
 	public void testRemoveBeanPropertyChangeListener()
 	{
-		final PropertyChangeListener listener = new PropertyChangeListenerSpy();
+		final PropertyChangeListener listener = new PropertyChangeAssertion();
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class);
 
 		adapter.addBeanPropertyChangeListener(listener);
@@ -177,7 +175,7 @@ public class BeanAdapterTest
 	@Test
 	public void testRemoveBeanPropertyChangeListener_SpecificProperty()
 	{
-		final PropertyChangeListener listener = new PropertyChangeListenerSpy();
+		final PropertyChangeListener listener = new PropertyChangeAssertion();
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class);
 
 		adapter.addBeanPropertyChangeListener(TestBean.PROPERTYNAME_PROPERTY1, listener);
@@ -200,7 +198,7 @@ public class BeanAdapterTest
 	public void testSetBean_ForwardsBeanListeners()
 	{
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class);
-		final PropertyChangeListenerSpy listenerSpy = new PropertyChangeListenerSpy();
+		final PropertyChangeAssertion listenerSpy = new PropertyChangeAssertion();
 
 		adapter.getValueModel(TestBean.PROPERTYNAME_PROPERTY1);
 		adapter.addBeanPropertyChangeListener(TestBean.PROPERTYNAME_PROPERTY1, listenerSpy);
@@ -215,7 +213,7 @@ public class BeanAdapterTest
 	public void testSetBean_AdaptedValuesListenersNotified()
 	{
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class);
-		final PropertyChangeListenerSpy listenerSpy = new PropertyChangeListenerSpy();
+		final PropertyChangeAssertion listenerSpy = new PropertyChangeAssertion();
 		final ValueModel valueModel = adapter.getValueModel(TestBean.PROPERTYNAME_PROPERTY1);
 
 		valueModel.addValueChangeListener(listenerSpy);
@@ -225,9 +223,7 @@ public class BeanAdapterTest
 		bean.setProperty1("TEST_FORWARD");
 		adapter.setBean(bean);
 
-		Assert.assertEquals(1, listenerSpy.getFiredEvents().size());
-		Assert.assertEquals(AbstractValueModel.PROPERTYNAME_VALUE, listenerSpy.getFiredEvents().get(0).getPropertyName());
-		Assert.assertEquals("TEST_FORWARD", listenerSpy.getFiredEvents().get(0).getNewValue());
+		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, adapter, null, "TEST_FORWARD");
 	}
 
 	@Test
@@ -235,32 +231,14 @@ public class BeanAdapterTest
 	{
 		final NonSpecificFireBean bean = new NonSpecificFireBean();
 		final BeanAdapter adapter = new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class);
-		final PropertyChangeListenerSpy listenerSpy = new PropertyChangeListenerSpy();
+		final PropertyChangeAssertion listenerSpy = new PropertyChangeAssertion();
 		final ValueModel valueModel = adapter.getValueModel("property");
 
 		valueModel.addValueChangeListener(listenerSpy);
 
 		bean.setProperty("TEST_FORWARD");
 
-		Assert.assertEquals(1, listenerSpy.getFiredEvents().size());
-		Assert.assertEquals(AbstractValueModel.PROPERTYNAME_VALUE, listenerSpy.getFiredEvents().get(0).getPropertyName());
-		Assert.assertEquals("TEST_FORWARD", listenerSpy.getFiredEvents().get(0).getNewValue());
-	}
-
-	public static class PropertyChangeListenerSpy implements PropertyChangeListener
-	{
-		private final List<PropertyChangeEvent> firedEvents = new ArrayList<PropertyChangeEvent>();
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt)
-		{
-			firedEvents.add(evt);
-		}
-
-		public List<PropertyChangeEvent> getFiredEvents()
-		{
-			return firedEvents;
-		}
+		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, adapter, null, "TEST_FORWARD");
 	}
 
 	public static class NonSpecificFireBean extends StandardBean

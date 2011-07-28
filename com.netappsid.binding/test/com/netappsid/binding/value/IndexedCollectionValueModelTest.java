@@ -11,12 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.netappsid.binding.beans.BeanAdapterTest.PropertyChangeListenerSpy;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
+import com.netappsid.test.tools.PropertyChangeAssertion;
 
 public class IndexedCollectionValueModelTest
 {
@@ -185,11 +185,11 @@ public class IndexedCollectionValueModelTest
 
 		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
 
-		PropertyChangeListenerSpy eventSpy = new PropertyChangeListenerSpy();
+		PropertyChangeAssertion eventSpy = new PropertyChangeAssertion();
 		indexedCollectionValueModel.addValueChangeListener(eventSpy);
 		indexedCollectionValueModel.setValue(newList);
 
-		assertTrue("Source must be the ValueModel", eventSpy.getFiredEvents().get(0).getSource().equals(indexedCollectionValueModel));
+		eventSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, indexedCollectionValueModel);
 	}
 
 	@Test
