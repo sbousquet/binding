@@ -223,7 +223,7 @@ public class BeanAdapterTest
 		bean.setProperty1("TEST_FORWARD");
 		adapter.setBean(bean);
 
-		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, adapter, null, "TEST_FORWARD");
+		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, valueModel, "TEST_FORWARD");
 	}
 
 	@Test
@@ -238,7 +238,7 @@ public class BeanAdapterTest
 
 		bean.setProperty("TEST_FORWARD");
 
-		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, adapter, null, "TEST_FORWARD");
+		listenerSpy.assertEventFired(AbstractValueModel.PROPERTYNAME_VALUE, valueModel,  "TEST_FORWARD");
 	}
 
 	public static class NonSpecificFireBean extends StandardBean
