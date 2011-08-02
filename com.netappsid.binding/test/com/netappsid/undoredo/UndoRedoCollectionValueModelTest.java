@@ -87,12 +87,12 @@ public class UndoRedoCollectionValueModelTest
 		undoRedoCollectionValueModel.undo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel, never()).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel, never()).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
-		assertTrue(newObservableArrayList.contains(oldObject));
-		assertFalse(newObservableArrayList.contains(newObject));
+		verify(collectionValueModel).add(oldObject);
+		verify(collectionValueModel).remove(newObject);
 	}
 
 	@Test
@@ -107,12 +107,12 @@ public class UndoRedoCollectionValueModelTest
 		undoRedoCollectionValueModel.redo(new CollectionChangeEvent(newObservableArrayList, difference));
 
 		InOrder inOrder = inOrder(collectionValueModel, undoRedoManager, collectionValueModel);
-		inOrder.verify(collectionValueModel, never()).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).removeCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
-		inOrder.verify(collectionValueModel, never()).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
+		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
-		assertFalse(newObservableArrayList.contains(oldObject));
-		assertTrue(newObservableArrayList.contains(newObject));
+		verify(collectionValueModel).remove(oldObject);
+		verify(collectionValueModel).add(newObject);
 	}
 
 	@Test
