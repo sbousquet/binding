@@ -2,16 +2,20 @@ package com.netappsid.binding.beans;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
+import com.netappsid.observable.CollectionDifference;
 import com.netappsid.observable.DefaultObservableCollectionSupport;
+import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollection;
-import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
+import com.netappsid.observable.SwingDefaultObservableCollectionSupport;
 
 public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E>> extends AbstractValueModel implements CollectionValueModel<E>
 {
@@ -30,9 +34,23 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			uninstall((T) evt.getOldValue());
-			install((T) evt.getNewValue());
-			AbstractCollectionValueModel.this.fireValueChange(evt.getOldValue(), evt.getNewValue());
+			List oldValue = (List) evt.getOldValue();
+			List newValue = (List) evt.getNewValue();
+
+			uninstall((T) oldValue);
+			install((T) newValue);
+			AbstractCollectionValueModel.this.fireValueChange(oldValue, newValue);
+
+			ImmutableList<Object> oldDelta = (oldValue == null) ? ImmutableList.of() : ImmutableList.copyOf(oldValue);
+			ImmutableList<Object> newDelta = (newValue == null) ? ImmutableList.of() : ImmutableList.copyOf(newValue);
+
+			CollectionDifference difference = ListDifference.difference(oldDelta, newDelta);
+
+			// We need to force a CollectionChange when the value changes to ensure
+			// bound components refreshes their content because the source of there
+			// binding didn't change.
+			CollectionChangeEvent collectionChangeEvent = defaultObservableCollectionSupport.newCollectionChangeEvent(difference, -1);
+			defaultObservableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
 		}
 	}
 
@@ -44,7 +62,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	{
 		super(changeSupportFactory);
 
-		this.defaultObservableCollectionSupport = new DefaultObservableCollectionSupport(this);
+		this.defaultObservableCollectionSupport = new SwingDefaultObservableCollectionSupport(this);
 		this.valueModel = valueModel;
 		this.modelCollectionListener = new ModelCollectionChangeHandler();
 
@@ -85,8 +103,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	@Override
 	public T getValue()
 	{
-		Object value = valueModel.getValue();
-		return (T) ((value == null) ? ObservableCollections.newObservableArrayList() : value);
+		return (T) valueModel.getValue();
 	}
 
 	@Override
