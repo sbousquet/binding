@@ -20,6 +20,7 @@ import com.netappsid.test.tools.PropertyChangeAssertion;
 
 public class IndexedCollectionValueModelTest
 {
+	private IndexedCollectionValueModel indexedCollectionValueModelWithNullBean;
 	private IndexedCollectionValueModel indexedCollectionValueModel;
 	private Object firstObject;
 	private Object added1;
@@ -37,6 +38,9 @@ public class IndexedCollectionValueModelTest
 		when(simplePropertyAdapter.getValue()).thenReturn(collection);
 
 		indexedCollectionValueModel = new IndexedCollectionValueModel(simplePropertyAdapter, new StandardChangeSupportFactory());
+
+		SimplePropertyAdapter simplePropertyAdapterWithNullValue = mock(SimplePropertyAdapter.class);
+		indexedCollectionValueModelWithNullBean = new IndexedCollectionValueModel(simplePropertyAdapterWithNullValue, new StandardChangeSupportFactory());
 	}
 
 	@Test
@@ -73,10 +77,22 @@ public class IndexedCollectionValueModelTest
 	}
 
 	@Test
+	public void testSize_NullBean()
+	{
+		assertEquals(0, indexedCollectionValueModelWithNullBean.size());
+	}
+
+	@Test
 	public void testAdd()
 	{
 		indexedCollectionValueModel.add(added1);
 		assertTrue(indexedCollectionValueModel.contains(added1));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testAdd_NullBean()
+	{
+		indexedCollectionValueModelWithNullBean.add(added1);
 	}
 
 	@Test
@@ -86,6 +102,13 @@ public class IndexedCollectionValueModelTest
 		indexedCollectionValueModel.addAll(added);
 		assertTrue(indexedCollectionValueModel.contains(added1));
 		assertTrue(indexedCollectionValueModel.contains(added2));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testAddAll_NullBean()
+	{
+		List added = Arrays.asList(added1, added2);
+		indexedCollectionValueModelWithNullBean.addAll(added);
 	}
 
 	@Test
@@ -118,11 +141,24 @@ public class IndexedCollectionValueModelTest
 	}
 
 	@Test
+	public void testIsEmpty_NullBean()
+	{
+		assertTrue(indexedCollectionValueModelWithNullBean.isEmpty());
+	}
+
+	@Test
 	public void testIterator()
 	{
 		Iterator iterator = indexedCollectionValueModel.iterator();
 		assertTrue("Should have an element", iterator.hasNext());
 		assertEquals("First element must be returned", firstObject, iterator.next());
+	}
+
+	@Test
+	public void testIterator_NullBean()
+	{
+		Iterator iterator = indexedCollectionValueModelWithNullBean.iterator();
+		assertFalse("Should be empty", iterator.hasNext());
 	}
 
 	@Test
@@ -132,6 +168,12 @@ public class IndexedCollectionValueModelTest
 		assertFalse(indexedCollectionValueModel.contains(firstObject));
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testRemove_NullBean()
+	{
+		indexedCollectionValueModelWithNullBean.remove(firstObject);
+	}
+
 	@Test
 	public void testRemoveAll()
 	{
@@ -139,6 +181,12 @@ public class IndexedCollectionValueModelTest
 		indexedCollectionValueModel.addAll(added);
 		indexedCollectionValueModel.removeAll(Arrays.asList(firstObject));
 		assertTrue("Only first object must be found", indexedCollectionValueModel.containsAll(added));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testRemoveAll_NullBean()
+	{
+		indexedCollectionValueModelWithNullBean.removeAll(Arrays.asList(firstObject));
 	}
 
 	@Test
@@ -196,14 +244,14 @@ public class IndexedCollectionValueModelTest
 	public void testEnsureListenersOnNewCollection_AndSourceIsValueModel()
 	{
 		StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
-		
+
 		ObservableList<Object> oldList = ObservableCollections.newObservableArrayList();
 		ObservableList<Object> newList = ObservableCollections.newObservableArrayList();
 
 		ValueHolder valueHolder = new ValueHolder(changeSupportFactory, oldList);
-		
+
 		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
-		
+
 		CollectionChangeEventSpy eventSpy = new CollectionChangeEventSpy();
 		indexedCollectionValueModel.addCollectionChangeListener(eventSpy);
 
