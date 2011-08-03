@@ -16,6 +16,7 @@ import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
+import com.netappsid.observable.StandardObservableCollectionSupportFactory;
 import com.netappsid.test.tools.PropertyChangeAssertion;
 
 public class IndexedCollectionValueModelTest
@@ -37,10 +38,12 @@ public class IndexedCollectionValueModelTest
 		SimplePropertyAdapter simplePropertyAdapter = mock(SimplePropertyAdapter.class);
 		when(simplePropertyAdapter.getValue()).thenReturn(collection);
 
-		indexedCollectionValueModel = new IndexedCollectionValueModel(simplePropertyAdapter, new StandardChangeSupportFactory());
+		indexedCollectionValueModel = new IndexedCollectionValueModel(simplePropertyAdapter, new StandardChangeSupportFactory(),
+				new StandardObservableCollectionSupportFactory());
 
 		SimplePropertyAdapter simplePropertyAdapterWithNullValue = mock(SimplePropertyAdapter.class);
-		indexedCollectionValueModelWithNullBean = new IndexedCollectionValueModel(simplePropertyAdapterWithNullValue, new StandardChangeSupportFactory());
+		indexedCollectionValueModelWithNullBean = new IndexedCollectionValueModel(simplePropertyAdapterWithNullValue, new StandardChangeSupportFactory(),
+				new StandardObservableCollectionSupportFactory());
 	}
 
 	@Test
@@ -231,7 +234,8 @@ public class IndexedCollectionValueModelTest
 
 		ValueHolder valueHolder = new ValueHolder(changeSupportFactory, oldList);
 
-		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
+		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory,
+				new StandardObservableCollectionSupportFactory());
 
 		PropertyChangeAssertion eventSpy = new PropertyChangeAssertion();
 		indexedCollectionValueModel.addValueChangeListener(eventSpy);
@@ -250,7 +254,8 @@ public class IndexedCollectionValueModelTest
 
 		ValueHolder valueHolder = new ValueHolder(changeSupportFactory, oldList);
 
-		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory);
+		IndexedCollectionValueModel indexedCollectionValueModel = new IndexedCollectionValueModel(valueHolder, changeSupportFactory,
+				new StandardObservableCollectionSupportFactory());
 
 		CollectionChangeEventSpy eventSpy = new CollectionChangeEventSpy();
 		indexedCollectionValueModel.addCollectionChangeListener(eventSpy);

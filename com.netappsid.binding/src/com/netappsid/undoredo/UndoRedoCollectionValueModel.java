@@ -11,9 +11,9 @@ import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.CollectionDifference;
-import com.netappsid.observable.DefaultObservableCollectionSupport;
 import com.netappsid.observable.ObservableCollection;
-import com.netappsid.observable.SwingDefaultObservableCollectionSupport;
+import com.netappsid.observable.ObservableCollectionSupport;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 
 public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel<E>
 {
@@ -28,16 +28,16 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		}
 	}
 
-	private final DefaultObservableCollectionSupport observableCollectionSupport;
+	private final ObservableCollectionSupport observableCollectionSupport;
 	private final CollectionChangeListener collectionChangeHandler;
 
-	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel)
+	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel, ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
 		super(manager, valueModel);
 
 		collectionChangeHandler = new DelegateCollectionValueModelCollectionChangeListener();
 
-		observableCollectionSupport = new SwingDefaultObservableCollectionSupport(this);
+		observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
 		getValueModel().addCollectionChangeListener(collectionChangeHandler);
 	}
 
@@ -66,7 +66,7 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 			getUndoRedoManager().beginTransaction();
 			CollectionDifference difference = event.getDifference();
 
-			ObservableCollection source = (ObservableCollection) getValueModel();
+			ObservableCollection source = getValueModel();
 
 			for (Object added : difference.getAdded())
 			{
@@ -96,7 +96,7 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 
 			// Always use the ValueModel's value since when an entity is reloaded, a new collection
 			// containing the same objects is recreated
-			ObservableCollection source = (ObservableCollection) getValueModel();
+			ObservableCollection source = getValueModel();
 
 			for (Object added : difference.getAdded())
 			{
@@ -111,7 +111,7 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		finally
 		{
 			getValueModel().addCollectionChangeListener(this.collectionChangeHandler);
-			getUndoRedoManager().endTransaction();			
+			getUndoRedoManager().endTransaction();
 		}
 	}
 
@@ -120,7 +120,6 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	{
 		return getValueModel().get(index);
 	}
-
 
 	@Override
 	public E set(int index, E newValue)

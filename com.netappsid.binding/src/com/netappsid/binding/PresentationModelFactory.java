@@ -31,17 +31,18 @@ public class PresentationModelFactory
 			}
 			else if (List.class.isAssignableFrom(propertyDescriptor.getPropertyType()))
 			{
-				presentationModel = new SelectionPresentationModel(parentModel.getChangeSupportFactory(), getGenericReturnType(propertyDescriptor),
-						parentModel.getValueModel(propertyName));
+				presentationModel = new SelectionPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
+						getGenericReturnType(propertyDescriptor), parentModel.getValueModel(propertyName));
 			}
 			else if (Map.class.isAssignableFrom(propertyDescriptor.getPropertyType()))
 			{
-				presentationModel = new DynamicPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getValueModel(propertyName));
+				presentationModel = new DynamicPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
+						parentModel.getValueModel(propertyName));
 			}
 			else
 			{
-				presentationModel = new DefaultPresentationModel(parentModel.getChangeSupportFactory(), propertyDescriptor.getPropertyType(),
-						parentModel.getValueModel(propertyName));
+				presentationModel = new DefaultPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
+						propertyDescriptor.getPropertyType(), parentModel.getValueModel(propertyName));
 			}
 		}
 		else if (parentModel instanceof DynamicPresentationModel)
@@ -50,7 +51,8 @@ public class PresentationModelFactory
 		}
 		else if (parentModel instanceof SelectionPresentationModel)
 		{
-			presentationModel = new DefaultPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getBeanClass());
+			presentationModel = new DefaultPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
+					parentModel.getBeanClass());
 		}
 
 		if (presentationModel != null)
@@ -77,7 +79,7 @@ public class PresentationModelFactory
 			return null;
 		}
 	}
-	
+
 	private static Class<?> extractType(Type t)
 	{
 		if (t != null && t instanceof ParameterizedType)

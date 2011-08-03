@@ -6,7 +6,9 @@ import java.beans.PropertyDescriptor;
 
 import org.junit.Test;
 
+import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
+import com.netappsid.observable.StandardObservableCollectionSupportFactory;
 import com.netappsid.test.beans.TestBean;
 import com.netappsid.test.beans.TestBeanDetail;
 
@@ -15,8 +17,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetPropertyName()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class),
-				TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		assertEquals(TestBean.PROPERTYNAME_PROPERTY1, adapter.getPropertyName());
 	}
@@ -24,7 +25,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetPropertyDescriptor_NullBeanReturnsNull()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		assertNull(adapter.getPropertyDescriptor());
 	}
@@ -32,7 +33,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetPropertyDescriptor_NonAdaptablePropertyReturnsNull()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class), "nonExisting");
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), "nonExisting");
 
 		assertNull(adapter.getPropertyDescriptor());
 	}
@@ -40,8 +41,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetPropertyDescriptor_AdaptablePropertyReturnsValidPropertyDescriptor()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class),
-				TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 		final PropertyDescriptor propertyDescriptor = adapter.getPropertyDescriptor();
 
 		assertNotNull(propertyDescriptor);
@@ -54,7 +54,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetValue_NullBeanReturnsNull()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		assertNull(adapter.getValue());
 	}
@@ -62,7 +62,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testGetValue_NonAdaptablePropertyReturnsNull()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class), "nonExisting");
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), "nonExisting");
 
 		assertNull(adapter.getValue());
 	}
@@ -71,8 +71,7 @@ public class SimplePropertyAdapterTest
 	public void testGetValue_AdaptablePropertyReturnsBeanPropertyValue()
 	{
 		final TestBean bean = new TestBean("1");
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class),
-				TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(bean, TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		bean.setProperty1("TEST");
 		assertEquals("TEST", adapter.getValue());
@@ -81,7 +80,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testSetValue_NullBeanDoesntGenerateException()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		try
 		{
@@ -96,7 +95,7 @@ public class SimplePropertyAdapterTest
 	@Test
 	public void testSetValue_NonAdaptablePropertyDoesntGenerateException()
 	{
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), new TestBean("1"), TestBean.class), "nonExisting");
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), "nonExisting");
 
 		try
 		{
@@ -112,26 +111,40 @@ public class SimplePropertyAdapterTest
 	public void testSetValue_AdaptablePropertySetsBeanValue()
 	{
 		final TestBean bean = new TestBean("1");
-		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class),
-				TestBean.PROPERTYNAME_PROPERTY1);
+		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(bean, TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
 		adapter.setValue("TEST");
 		assertEquals("TEST", bean.getProperty1());
 	}
-	
+
 	@Test
 	public void testSetValue_EnsureParentBeanInstanciated()
 	{
 		final TestBean bean = new TestBean("1");
-		BeanAdapter beanAdapter = new BeanAdapter(new StandardChangeSupportFactory(), bean, TestBean.class);
-		
-		SimplePropertyAdapter bean1ValueModel = (SimplePropertyAdapter) beanAdapter.getValueModel(TestBean.PROPERTYNAME_BEAN1);
-		BeanAdapter bean1Adapter = new BeanAdapter(new StandardChangeSupportFactory(),bean1ValueModel, TestBeanDetail.class);  
-		
+		BeanAdapter beanAdapter = newBeanAdapter(bean, TestBean.class);
+
+		SimplePropertyAdapter bean1ValueModel = beanAdapter.getValueModel(TestBean.PROPERTYNAME_BEAN1);
+		BeanAdapter bean1Adapter = newBeanAdapter(bean1ValueModel, TestBeanDetail.class);
+
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(bean1Adapter, TestBeanDetail.PROPERTYNAME_PROPERTY);
 
 		assertNull(bean.getBean1());
 		adapter.setValue("PropertyValue");
 		assertEquals("PropertyValue", bean.getBean1().getProperty());
+	}
+
+	private BeanAdapter newBeanAdapter(Class beanClass)
+	{
+		return new BeanAdapter(new StandardChangeSupportFactory(), new StandardObservableCollectionSupportFactory(), beanClass);
+	}
+
+	private BeanAdapter newBeanAdapter(Object bean, Class beanClass)
+	{
+		return new BeanAdapter(new StandardChangeSupportFactory(), new StandardObservableCollectionSupportFactory(), bean, beanClass);
+	}
+
+	private BeanAdapter newBeanAdapter(ValueModel beanChannel, Class beanClass)
+	{
+		return new BeanAdapter(new StandardChangeSupportFactory(), new StandardObservableCollectionSupportFactory(), beanChannel, beanClass);
 	}
 }
