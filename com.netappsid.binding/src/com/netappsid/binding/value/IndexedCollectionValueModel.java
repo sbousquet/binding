@@ -1,6 +1,7 @@
 package com.netappsid.binding.value;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -95,13 +96,13 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public boolean isEmpty()
 	{
-		return validateNotNull(getValue()).isEmpty();
+		return (getValue() == null) ? true : getValue().isEmpty();
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		return validateNotNull(getValue()).iterator();
+		return (getValue() == null) ? Collections.EMPTY_LIST.iterator() : getValue().iterator();
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public ListIterator<T> listIterator()
 	{
-		return validateNotNull(getValue()).listIterator();
+		return (getValue() == null) ? Collections.EMPTY_LIST.listIterator() : getValue().listIterator();
 	}
 
 	@Override
@@ -155,7 +156,7 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public int size()
 	{
-		return validateNotNull(getValue()).size();
+		return (getValue() == null) ? 0 : getValue().size();
 	}
 
 	@Override
