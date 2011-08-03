@@ -215,7 +215,7 @@ public class UndoRedoManagerTest
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testCommit_ValidSavePointNotLastSavePoint()
+	public void testCommit_SavePointNotLastSavePoint()
 	{
 		SavePoint savePoint = mock(SavePoint.class);
 
@@ -225,11 +225,11 @@ public class UndoRedoManagerTest
 		savePoints.add(savePoint);
 
 		doReturn(savePoints).when(manager).getSavePoints();
-		manager.commit(savePoint);
+		manager.commit(validSavePoint);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testCommit_ValidSavePointNotInSavePoints()
+	public void testCommit_SavePointNotInSavePoints()
 	{
 		SavePoint savePoint = mock(SavePoint.class);
 
@@ -242,7 +242,7 @@ public class UndoRedoManagerTest
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testCommit_ValidSavePoint_EmptySavePoints()
+	public void testCommit_SavePoint_EmptySavePoints()
 	{
 		SavePoint savePoint = mock(SavePoint.class);
 		manager.commit(savePoint);

@@ -96,7 +96,7 @@ public class UndoRedoManager
 			return;
 		}
 
-		if (getSavePoints().isEmpty() || !getSavePoints().contains(savePoint) || !getSavePoints().peek().equals(savePoint))
+		if (getSavePoints().isEmpty() || !getSavePoints().contains(savePoint) || !getSavePoints().peekLast().equals(savePoint))
 		{
 			throw new IllegalStateException("Trying to commit SavePoint that is not tracked by the UndoRedoManager");
 		}
