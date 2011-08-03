@@ -79,10 +79,10 @@ public class IndexedCollectionValueModelTest
 		assertEquals(1, indexedCollectionValueModel.size());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testSize_NullBean()
 	{
-		indexedCollectionValueModelWithNullBean.size();
+		assertEquals("Collection must be empty", 0, indexedCollectionValueModelWithNullBean.size());
 	}
 
 	@Test
@@ -143,10 +143,10 @@ public class IndexedCollectionValueModelTest
 		assertTrue(indexedCollectionValueModel.isEmpty());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testIsEmpty_NullBean()
 	{
-		indexedCollectionValueModelWithNullBean.isEmpty();
+		assertTrue("Collection must be empty", indexedCollectionValueModelWithNullBean.isEmpty());
 	}
 
 	@Test
@@ -157,10 +157,10 @@ public class IndexedCollectionValueModelTest
 		assertEquals("First element must be returned", firstObject, iterator.next());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testIterator_NullBean()
 	{
-		indexedCollectionValueModelWithNullBean.iterator();
+		assertFalse("Collection must be empty", indexedCollectionValueModelWithNullBean.iterator().hasNext());
 	}
 
 	@Test
