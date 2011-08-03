@@ -13,6 +13,7 @@ import com.netappsid.binding.selection.SelectionHolder;
 import com.netappsid.binding.selection.SelectionModel;
 import com.netappsid.binding.state.StateModel;
 import com.netappsid.binding.value.ValueHolder;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.validate.Validate;
 
 /**
@@ -27,27 +28,29 @@ public class SelectionPresentationModel extends PresentationModel
 {
 	public static final String DEFAULT_SELECTION = "selected";
 	public static final String PROPERTYNAME_BEAN_LIST = "beanList";
-	
+
 	private final ValueModel beanListChannel;
 	private Map<String, SelectionModel> selectionModels;
 
-	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass)
+	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass)
 	{
-		this(changeSupportFactory, beanClass, new ValueHolder(null, true));
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(null, true));
 	}
 
-	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass, List<?> beanList)
+	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, List<?> beanList)
 	{
-		this(changeSupportFactory, beanClass, new ValueHolder(changeSupportFactory, beanList, true));
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(changeSupportFactory, beanList, true));
 	}
 
-	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass, ValueModel beanListChannel)
+	public SelectionPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, ValueModel beanListChannel)
 	{
-		super(changeSupportFactory);
+		super(changeSupportFactory, observableCollectionSupportFactory);
 		this.beanListChannel = beanListChannel;
 		setBeanClass(beanClass);
 	}
-
 
 	@Override
 	public Object getBean()
@@ -214,7 +217,7 @@ public class SelectionPresentationModel extends PresentationModel
 	{
 		getValueModel(propertyName).setValue(newValue);
 	}
-	
+
 	@Override
 	public StateModel getStateModel()
 	{

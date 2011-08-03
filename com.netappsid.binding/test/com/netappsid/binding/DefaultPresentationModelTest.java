@@ -6,23 +6,25 @@ import org.junit.Test;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.StandardBean;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
+import com.netappsid.observable.StandardObservableCollectionSupportFactory;
 
 public class DefaultPresentationModelTest
 {
 	@Test
 	public void testStabilityWhenChangingPresentedInstanceType()
 	{
-		final PresentationModel rootModel = new DefaultPresentationModel(new StandardChangeSupportFactory(), TestModel.class);
+		final PresentationModel rootModel = new DefaultPresentationModel(new StandardChangeSupportFactory(), new StandardObservableCollectionSupportFactory(),
+				TestModel.class);
 		final ValueModel property1Channel = rootModel.getValueModel("property1");
 		final ValueModel property2Channel = rootModel.getValueModel("property2");
-		
+
 		rootModel.setBean(new TestSubModel1());
-		
+
 		Assert.assertEquals("PROPERTY1", property1Channel.getValue());
 		Assert.assertEquals(null, property2Channel.getValue());
-		
+
 		rootModel.setBean(new TestSubModel2());
-		
+
 		Assert.assertEquals(null, property1Channel.getValue());
 		Assert.assertEquals("PROPERTY2", property2Channel.getValue());
 	}

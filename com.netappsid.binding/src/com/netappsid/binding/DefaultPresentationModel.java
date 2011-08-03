@@ -10,13 +10,13 @@ import com.netappsid.binding.state.State;
 import com.netappsid.binding.state.StateModel;
 import com.netappsid.binding.state.StatePropertyChangeEvent;
 import com.netappsid.binding.value.ValueHolder;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 
 /**
  * 
  * 
  * @author Eric Belanger
  * @author NetAppsID Inc.
- * @version $Revision: 1.16 $
  */
 @SuppressWarnings("serial")
 public class DefaultPresentationModel extends PresentationModel
@@ -26,20 +26,23 @@ public class DefaultPresentationModel extends PresentationModel
 	private final BeanAdapter beanAdapter;
 	private final StateModel stateModel;
 
-	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass)
+	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass)
 	{
-		this(changeSupportFactory, beanClass, new ValueHolder(changeSupportFactory, null, true));
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(changeSupportFactory, null, true));
 	}
 
-	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass, Object bean)
+	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, Object bean)
 	{
-		this(changeSupportFactory, beanClass, new ValueHolder(changeSupportFactory, bean, true));
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(changeSupportFactory, bean, true));
 	}
 
-	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass, ValueModel beanChannel)
+	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, ValueModel beanChannel)
 	{
-		super(changeSupportFactory);
-		this.beanAdapter = new BeanAdapter(changeSupportFactory, beanChannel, beanClass);
+		super(changeSupportFactory, observableCollectionSupportFactory);
+		this.beanAdapter = new BeanAdapter(changeSupportFactory, observableCollectionSupportFactory, beanChannel, beanClass);
 		this.stateModel = new StateModel(changeSupportFactory);
 
 		setBeanClass(beanClass);

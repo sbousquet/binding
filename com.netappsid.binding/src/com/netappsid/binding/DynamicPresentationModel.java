@@ -12,6 +12,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.state.StateModel;
 import com.netappsid.binding.value.ValueHolder;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.validate.Validate;
 
 @SuppressWarnings("serial")
@@ -24,19 +25,21 @@ public class DynamicPresentationModel extends PresentationModel
 	private Map<String, ValueModel> valueModels;
 	private Map<ValueModel, String> valueModelNames;
 
-	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory)
+	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
-		this(changeSupportFactory, new ValueHolder(changeSupportFactory));
+		this(changeSupportFactory, observableCollectionSupportFactory, new ValueHolder(changeSupportFactory));
 	}
 
-	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory, Map<String, ?> map)
+	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Map<String, ?> map)
 	{
-		this(changeSupportFactory, new ValueHolder(changeSupportFactory, map));
+		this(changeSupportFactory, observableCollectionSupportFactory, new ValueHolder(changeSupportFactory, map));
 	}
 
-	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory, ValueModel mapChannel)
+	public DynamicPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			ValueModel mapChannel)
 	{
-		super(changeSupportFactory);
+		super(changeSupportFactory, observableCollectionSupportFactory);
 		this.mapChannel = Validate.notNull(mapChannel, "Map Channel cannot be null.");
 		this.propertyChangeSupport = new PropertyChangeSupport(mapChannel);
 

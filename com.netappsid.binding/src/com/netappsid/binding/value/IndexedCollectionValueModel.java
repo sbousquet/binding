@@ -10,13 +10,15 @@ import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.observable.ObservableList;
 
 public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel<T, ObservableList<T>> implements ObservableList<T>
 {
-	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
+	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory,
+			ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
-		super(valueModel, changeSupportFactory);
+		super(valueModel, changeSupportFactory, observableCollectionSupportFactory);
 	}
 
 	@Override

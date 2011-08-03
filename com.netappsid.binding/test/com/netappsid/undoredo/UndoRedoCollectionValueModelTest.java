@@ -20,6 +20,7 @@ import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
+import com.netappsid.observable.StandardObservableCollectionSupportFactory;
 
 public class UndoRedoCollectionValueModelTest
 {
@@ -45,7 +46,7 @@ public class UndoRedoCollectionValueModelTest
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
 		listener = mock(CollectionChangeListener.class);
 
-		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel);
+		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, new StandardObservableCollectionSupportFactory());
 
 		oldObject = new Object();
 		newObject = new Object();
