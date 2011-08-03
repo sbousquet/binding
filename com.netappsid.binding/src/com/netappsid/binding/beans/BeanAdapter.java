@@ -11,34 +11,38 @@ import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.binding.value.IndexedCollectionValueModel;
 import com.netappsid.binding.value.ValueHolder;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.validate.Validate;
 
 public class BeanAdapter extends Bean
 {
 	private final ChangeSupportFactory changeSupportFactory;
+	private final ObservableCollectionSupportFactory observableCollectionSupportFactory;
 	private final ValueModel beanChannel;
 	private final Class<?> beanClass;
 	private final Map<String, SimplePropertyAdapter> propertyAdapters;
 	private final Map<String, CollectionValueModel> collectionValueModels;
 	private final IndirectPropertyChangeSupport indirectChangeSupport;
 	private final PropertyChangeListener propertyChangeHandler;
-
 	private Object storedOldBean;
 
-	public BeanAdapter(ChangeSupportFactory changeSupportFactory, Class<?> beanClass)
+	public BeanAdapter(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory, Class<?> beanClass)
 	{
-		this(changeSupportFactory, (ValueModel) null, beanClass);
+		this(changeSupportFactory, observableCollectionSupportFactory, (ValueModel) null, beanClass);
 	}
 
-	public BeanAdapter(ChangeSupportFactory changeSupportFactory, Object bean, Class<?> beanClass)
+	public BeanAdapter(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory, Object bean,
+			Class<?> beanClass)
 	{
-		this(changeSupportFactory, new ValueHolder(changeSupportFactory, bean, true), beanClass);
+		this(changeSupportFactory, observableCollectionSupportFactory, new ValueHolder(changeSupportFactory, bean, true), beanClass);
 	}
 
-	public BeanAdapter(ChangeSupportFactory changeSupportFactory, ValueModel beanChannel, Class<?> beanClass)
+	public BeanAdapter(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			ValueModel beanChannel, Class<?> beanClass)
 	{
 		super(changeSupportFactory);
 		this.changeSupportFactory = changeSupportFactory;
+		this.observableCollectionSupportFactory = observableCollectionSupportFactory;
 		this.beanChannel = beanChannel != null ? beanChannel : new ValueHolder(changeSupportFactory, null, true);
 		this.beanClass = Validate.notNull(beanClass);
 		this.propertyAdapters = new HashMap<String, SimplePropertyAdapter>();
@@ -104,7 +108,7 @@ public class BeanAdapter extends Bean
 		if (collectionValueModel == null)
 		{
 			SimplePropertyAdapter propertyAdapter = getValueModel(propertyName);
-			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter, getChangeSupportFactory());
+			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter, getChangeSupportFactory(), observableCollectionSupportFactory);
 			collectionValueModels.put(propertyName, collectionValueModel);
 		}
 

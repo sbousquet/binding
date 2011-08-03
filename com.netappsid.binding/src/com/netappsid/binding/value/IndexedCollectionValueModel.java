@@ -9,170 +9,180 @@ import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.observable.ObservableList;
 
 public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel<T, ObservableList<T>> implements ObservableList<T>
 {
+	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory,
+			ObservableCollectionSupportFactory observableCollectionSupportFactory)
+	{
+		super(valueModel, changeSupportFactory, observableCollectionSupportFactory);
+	}
 
 	@Override
 	public void add(int index, T element)
 	{
-		getValue().add(index, element);
+		validateNotNull(getValue()).add(index, element);
 	}
 
 	@Override
 	public boolean add(T e)
 	{
-		return getValue().add(e);
+		return validateNotNull(getValue()).add(e);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends T> c)
 	{
-		return getValue().addAll(c);
+		return validateNotNull(getValue()).addAll(c);
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c)
 	{
-		return getValue().addAll(index, c);
+		return validateNotNull(getValue()).addAll(index, c);
 	}
 
 	@Override
 	public void clear()
 	{
-		getValue().clear();
+		validateNotNull(getValue()).clear();
 	}
 
 	@Override
 	public boolean contains(Object o)
 	{
-		return getValue().contains(o);
+		return validateNotNull(getValue()).contains(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return getValue().containsAll(c);
+		return validateNotNull(getValue()).containsAll(c);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		return getValue().equals(o);
+		return validateNotNull(getValue()).equals(o);
 	}
 
 	@Override
 	public void executeBatchAction(BatchAction action)
 	{
-		getValue().executeBatchAction(action);
+		validateNotNull(getValue()).executeBatchAction(action);
 	}
 
 	@Override
 	public T get(int index)
 	{
-		return getValue().get(index);
+		return validateNotNull(getValue()).get(index);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return getValue().hashCode();
+		return validateNotNull(getValue()).hashCode();
 	}
 
 	@Override
 	public int indexOf(Object o)
 	{
-		return getValue().indexOf(o);
+		return validateNotNull(getValue()).indexOf(o);
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return getValue().isEmpty();
+		return validateNotNull(getValue()).isEmpty();
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		return getValue().iterator();
+		return validateNotNull(getValue()).iterator();
 	}
 
 	@Override
 	public int lastIndexOf(Object o)
 	{
-		return getValue().lastIndexOf(o);
+		return validateNotNull(getValue()).lastIndexOf(o);
 	}
 
 	@Override
 	public ListIterator<T> listIterator()
 	{
-		return getValue().listIterator();
+		return validateNotNull(getValue()).listIterator();
 	}
 
 	@Override
 	public ListIterator<T> listIterator(int index)
 	{
-		return getValue().listIterator(index);
+		return validateNotNull(getValue()).listIterator(index);
 	}
 
 	@Override
 	public T remove(int index)
 	{
-		return getValue().remove(index);
+		return validateNotNull(getValue()).remove(index);
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
-		return getValue().remove(o);
+		return validateNotNull(getValue()).remove(o);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c)
 	{
-		return getValue().removeAll(c);
+		return validateNotNull(getValue()).removeAll(c);
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c)
 	{
-		return getValue().retainAll(c);
+		return validateNotNull(getValue()).retainAll(c);
 	}
 
 	@Override
 	public T set(int index, T element)
 	{
-		return getValue().set(index, element);
+		return validateNotNull(getValue()).set(index, element);
 	}
 
 	@Override
 	public int size()
 	{
-		return getValue().size();
+		return validateNotNull(getValue()).size();
 	}
 
 	@Override
 	public List<T> subList(int fromIndex, int toIndex)
 	{
-		return getValue().subList(fromIndex, toIndex);
+		return validateNotNull(getValue()).subList(fromIndex, toIndex);
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return getValue().toArray();
+		return validateNotNull(getValue()).toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		return getValue().toArray(a);
+		return validateNotNull(getValue()).toArray(a);
 	}
 
-	public IndexedCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
+	private ObservableList<T> validateNotNull(ObservableList<T> value)
 	{
-		super(valueModel, changeSupportFactory);
-	}
+		if (value == null)
+		{
+			throw new RuntimeException("Cannot operate on a null ValueModel target.");
+		}
 
+		return value;
+	}
 }

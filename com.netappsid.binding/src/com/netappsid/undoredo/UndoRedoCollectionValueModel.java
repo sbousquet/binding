@@ -11,8 +11,9 @@ import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.CollectionDifference;
-import com.netappsid.observable.DefaultObservableCollectionSupport;
 import com.netappsid.observable.ObservableCollection;
+import com.netappsid.observable.ObservableCollectionSupport;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 
 public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel<E>
 {
@@ -27,22 +28,22 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		}
 	}
 
-	private final DefaultObservableCollectionSupport observableCollectionSupport;
-	private final CollectionChangeListener listener;
+	private final ObservableCollectionSupport observableCollectionSupport;
+	private final CollectionChangeListener collectionChangeHandler;
 
-	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel)
+	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel, ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
 		super(manager, valueModel);
 
-		listener = new DelegateCollectionValueModelCollectionChangeListener();
+		collectionChangeHandler = new DelegateCollectionValueModelCollectionChangeListener();
 
-		observableCollectionSupport = new DefaultObservableCollectionSupport(this);
-		getValueModel().addCollectionChangeListener(listener);
+		observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
+		getValueModel().addCollectionChangeListener(collectionChangeHandler);
 	}
 
 	protected CollectionChangeListener getUndoRedoManagerPushHandler()
 	{
-		return listener;
+		return collectionChangeHandler;
 	}
 
 	@Override
@@ -61,13 +62,11 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	{
 		try
 		{
-			observableCollectionSupport.removeCollectionChangeListener(listener);
-
+			getValueModel().removeCollectionChangeListener(this.collectionChangeHandler);
+			getUndoRedoManager().beginTransaction();
 			CollectionDifference difference = event.getDifference();
 
-			// Always use the ValueModel's value since when an entity is reloaded, a new collection
-			// containing the same objects is recreated
-			ObservableCollection source = (ObservableCollection) getValueModel().getValue();
+			ObservableCollection source = getValueModel();
 
 			for (Object added : difference.getAdded())
 			{
@@ -81,7 +80,8 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		}
 		finally
 		{
-			observableCollectionSupport.addCollectionChangeListener(listener);
+			getValueModel().addCollectionChangeListener(this.collectionChangeHandler);
+			getUndoRedoManager().endTransaction();
 		}
 	}
 
@@ -89,13 +89,14 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	{
 		try
 		{
-			observableCollectionSupport.removeCollectionChangeListener(listener);
+			getValueModel().removeCollectionChangeListener(this.collectionChangeHandler);
+			getUndoRedoManager().beginTransaction();
 
 			CollectionDifference difference = event.getDifference();
 
 			// Always use the ValueModel's value since when an entity is reloaded, a new collection
 			// containing the same objects is recreated
-			ObservableCollection source = (ObservableCollection) getValueModel().getValue();
+			ObservableCollection source = getValueModel();
 
 			for (Object added : difference.getAdded())
 			{
@@ -109,7 +110,8 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		}
 		finally
 		{
-			observableCollectionSupport.addCollectionChangeListener(listener);
+			getValueModel().addCollectionChangeListener(this.collectionChangeHandler);
+			getUndoRedoManager().endTransaction();
 		}
 	}
 
@@ -118,7 +120,6 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	{
 		return getValueModel().get(index);
 	}
-
 
 	@Override
 	public E set(int index, E newValue)

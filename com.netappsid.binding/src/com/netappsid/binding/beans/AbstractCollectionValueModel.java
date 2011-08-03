@@ -2,15 +2,19 @@ package com.netappsid.binding.beans;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
-import com.netappsid.observable.DefaultObservableCollectionSupport;
+import com.netappsid.observable.CollectionDifference;
+import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollection;
-import com.netappsid.observable.ObservableCollections;
+import com.netappsid.observable.ObservableCollectionSupport;
+import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.observable.ObservableList;
 
 public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E>> extends AbstractValueModel implements CollectionValueModel<E>
@@ -20,8 +24,8 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		@Override
 		public void onCollectionChange(CollectionChangeEvent event)
 		{
-			CollectionChangeEvent collectionChangeEvent = defaultObservableCollectionSupport.newCollectionChangeEvent(event.getDifference(), event.getIndex());
-			defaultObservableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
+			CollectionChangeEvent collectionChangeEvent = observableCollectionSupport.newCollectionChangeEvent(event.getDifference(), event.getIndex());
+			observableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
 		}
 	}
 
@@ -30,23 +34,37 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			uninstall((T) evt.getOldValue());
-			install((T) evt.getNewValue());
-			AbstractCollectionValueModel.this.fireValueChange(evt.getOldValue(), evt.getNewValue());
+			List oldValue = (List) evt.getOldValue();
+			List newValue = (List) evt.getNewValue();
+
+			uninstall((T) oldValue);
+			install((T) newValue);
+			AbstractCollectionValueModel.this.fireValueChange(oldValue, newValue);
+
+			ImmutableList<Object> oldDelta = (oldValue == null) ? ImmutableList.of() : ImmutableList.copyOf(oldValue);
+			ImmutableList<Object> newDelta = (newValue == null) ? ImmutableList.of() : ImmutableList.copyOf(newValue);
+
+			CollectionDifference difference = ListDifference.difference(oldDelta, newDelta);
+
+			// We need to force a CollectionChange when the value changes to ensure
+			// bound components refreshes their content because the source of there
+			// binding didn't change.
+			CollectionChangeEvent collectionChangeEvent = observableCollectionSupport.newCollectionChangeEvent(difference, -1);
+			observableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
 		}
 	}
 
 	private final ValueModel valueModel;
-	private final ModelCollectionChangeHandler modelCollectionListener;
-	private final DefaultObservableCollectionSupport defaultObservableCollectionSupport;
+	private final ModelCollectionChangeHandler modelCollectionListener = new ModelCollectionChangeHandler();
+	private final ObservableCollectionSupport observableCollectionSupport;
 
-	public AbstractCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory)
+	public AbstractCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory,
+			ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
 		super(changeSupportFactory);
 
-		this.defaultObservableCollectionSupport = new DefaultObservableCollectionSupport(this);
+		this.observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
 		this.valueModel = valueModel;
-		this.modelCollectionListener = new ModelCollectionChangeHandler();
 
 		install((ObservableCollection) valueModel.getValue());
 
@@ -73,20 +91,19 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	@Override
 	public void addCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
-		defaultObservableCollectionSupport.addCollectionChangeListener(listener);
+		observableCollectionSupport.addCollectionChangeListener(listener);
 	}
 
 	@Override
 	public void removeCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
-		defaultObservableCollectionSupport.removeCollectionChangeListener(listener);
+		observableCollectionSupport.removeCollectionChangeListener(listener);
 	}
 
 	@Override
 	public T getValue()
 	{
-		Object value = valueModel.getValue();
-		return (T) ((value == null) ? ObservableCollections.newObservableArrayList() : value);
+		return (T) valueModel.getValue();
 	}
 
 	@Override
