@@ -1,7 +1,6 @@
 package com.netappsid.binding.value;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,237 +23,166 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public void add(int index, T element)
 	{
-		ObservableList<T> value = getValue();
-
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to add an object when ValueModel's value is null");
-		}
-
-		value.add(index, element);
+		validateNotNull(getValue()).add(index, element);
 	}
 
 	@Override
 	public boolean add(T e)
 	{
-		ObservableList<T> value = getValue();
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to add an object when ValueModel's value is null");
-		}
-
-		return value.add(e);
+		return validateNotNull(getValue()).add(e);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends T> c)
 	{
-		ObservableList<T> value = getValue();
-
-		if (value == null)
-		{
-
-			throw new RuntimeException("Trying to add an object when ValueModel's value is null");
-		}
-
-		return value.addAll(c);
+		return validateNotNull(getValue()).addAll(c);
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c)
 	{
-		ObservableList<T> value = getValue();
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to add an object when ValueModel's value is null");
-		}
-
-		return value.addAll(index, c);
+		return validateNotNull(getValue()).addAll(index, c);
 	}
 
 	@Override
 	public void clear()
 	{
-		ObservableList<T> value = getValue();
-		if (value != null)
-		{
-			getValue().clear();
-		}
+		validateNotNull(getValue()).clear();
 	}
 
 	@Override
 	public boolean contains(Object o)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? false : value.contains(o);
+		return validateNotNull(getValue()).contains(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? false : value.containsAll(c);
+		return validateNotNull(getValue()).containsAll(c);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		return getValue().equals(o);
+		return validateNotNull(getValue()).equals(o);
 	}
 
 	@Override
 	public void executeBatchAction(BatchAction action)
 	{
-		ObservableList<T> value = getValue();
-		if (value != null)
-		{
-			value.executeBatchAction(action);
-		}
+		validateNotNull(getValue()).executeBatchAction(action);
 	}
 
 	@Override
 	public T get(int index)
 	{
-		ObservableList<T> value = getValue();
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to get an item when ValueModel's value is null");
-		}
-
-		return value.get(index);
+		return validateNotNull(getValue()).get(index);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return getValue().hashCode();
+		return validateNotNull(getValue()).hashCode();
 	}
 
 	@Override
 	public int indexOf(Object o)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? -1 : value.indexOf(o);
+		return validateNotNull(getValue()).indexOf(o);
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? true : value.isEmpty();
+		return validateNotNull(getValue()).isEmpty();
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? Collections.EMPTY_LIST.iterator() : value.iterator();
+		return validateNotNull(getValue()).iterator();
 	}
 
 	@Override
 	public int lastIndexOf(Object o)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? -1 : value.lastIndexOf(o);
+		return validateNotNull(getValue()).lastIndexOf(o);
 	}
 
 	@Override
 	public ListIterator<T> listIterator()
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? Collections.EMPTY_LIST.listIterator() : value.listIterator();
+		return validateNotNull(getValue()).listIterator();
 	}
 
 	@Override
 	public ListIterator<T> listIterator(int index)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? Collections.EMPTY_LIST.listIterator() : value.listIterator(index);
+		return validateNotNull(getValue()).listIterator(index);
 	}
 
 	@Override
 	public T remove(int index)
 	{
-		ObservableList<T> value = getValue();
-
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to remove an object when ValueModel's value is null");
-		}
-
-		return value.remove(index);
+		return validateNotNull(getValue()).remove(index);
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
-		ObservableList<T> value = getValue();
-
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to remove an object when ValueModel's value is null");
-		}
-
-		return value.remove(o);
+		return validateNotNull(getValue()).remove(o);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c)
 	{
-		ObservableList<T> value = getValue();
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to remove an object when ValueModel's value is null");
-		}
-
-		return value.removeAll(c);
+		return validateNotNull(getValue()).removeAll(c);
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? false : value.retainAll(c);
+		return validateNotNull(getValue()).retainAll(c);
 	}
 
 	@Override
 	public T set(int index, T element)
 	{
-		ObservableList<T> value = getValue();
-
-		if (value == null)
-		{
-			throw new RuntimeException("Trying to set an object when ValueModel's value is null");
-		}
-
-		return value.set(index, element);
+		return validateNotNull(getValue()).set(index, element);
 	}
 
 	@Override
 	public int size()
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? 0 : value.size();
+		return validateNotNull(getValue()).size();
 	}
 
 	@Override
 	public List<T> subList(int fromIndex, int toIndex)
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? Collections.EMPTY_LIST : value.subList(fromIndex, toIndex);
+		return validateNotNull(getValue()).subList(fromIndex, toIndex);
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		ObservableList<T> value = getValue();
-		return (value == null) ? new Object[] {} : value.toArray();
+		return validateNotNull(getValue()).toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		ObservableList<T> value = (ObservableList<T>) getValue();
-		return ((value == null) ? (T[]) new Object[] {} : value.toArray(a));
+		return validateNotNull(getValue()).toArray(a);
+	}
+
+	private ObservableList<T> validateNotNull(ObservableList<T> value)
+	{
+		if (value == null)
+		{
+			throw new RuntimeException("Cannot operate on a null ValueModel target.");
+		}
+
+		return value;
 	}
 }
