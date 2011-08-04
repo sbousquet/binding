@@ -7,7 +7,6 @@ import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.binding.value.CollectionValueModelFactory;
 import com.netappsid.binding.value.ValueModelFactory;
-import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ObservableCollectionSupportFactory;
 
 public class UndoRedoValueModelFactory extends AbstractUndoRedoValueModelFactory implements CollectionValueModelFactory
@@ -29,14 +28,13 @@ public class UndoRedoValueModelFactory extends AbstractUndoRedoValueModelFactory
 	}
 
 	@Override
-	public CollectionValueModel getCollectionValueModel(String propertyName, CollectionChangeListener collectionChangeListener)
+	public CollectionValueModel getCollectionValueModel(String propertyName)
 	{
 		CollectionValueModel returnedCollectionValueModel = collectionValueModelCache.get(propertyName);
 
 		if (returnedCollectionValueModel == null)
 		{
-			CollectionValueModel newCollectionValueModel = ((CollectionValueModelFactory) getDelegate()).getCollectionValueModel(propertyName,
-					collectionChangeListener);
+			CollectionValueModel newCollectionValueModel = ((CollectionValueModelFactory) getDelegate()).getCollectionValueModel(propertyName);
 
 			returnedCollectionValueModel = new UndoRedoCollectionValueModel(getUndoRedoManager(), newCollectionValueModel, observableCollectionSupportFactory);
 
