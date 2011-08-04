@@ -6,10 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
+import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.observable.ObservableList;
 
@@ -185,5 +187,11 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 		}
 
 		return value;
+	}
+
+	@Override
+	public ImmutableList<CollectionChangeListener<T>> getCollectionChangeListeners()
+	{
+		return ImmutableList.copyOf(getSupport().getCollectionChangeListeners());
 	}
 }

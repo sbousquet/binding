@@ -220,4 +220,10 @@ public class UndoRedoCollectionValueModelTest
 		Object[] array = undoRedoCollectionValueModel.toArray(targetArrayType);
 		verify(collectionValueModel).toArray(targetArrayType);
 	}
+
+	@Test
+	public void testGetCollectionChangeListeners_EnsureNotNull()
+	{
+		assertTrue(undoRedoCollectionValueModel.getCollectionChangeListeners().isEmpty());
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
 import com.netappsid.observable.BatchAction;
@@ -257,5 +258,11 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	public List<E> subList(int fromIndex, int toIndex)
 	{
 		return getValueModel().subList(fromIndex, toIndex);
+	}
+
+	@Override
+	public ImmutableList<CollectionChangeListener<E>> getCollectionChangeListeners()
+	{
+		return observableCollectionSupport.getCollectionChangeListeners();
 	}
 }

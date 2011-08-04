@@ -272,4 +272,10 @@ public class IndexedCollectionValueModelTest
 		assertTrue("oldList must contain addedInOldList", oldList.contains(addedInOldList));
 		assertTrue("newList must contain addedInNewList", newList.contains(addedInNewList));
 	}
+
+	@Test
+	public void testGetCollectionChangeListeners_EnsureNotNull()
+	{
+		assertTrue(indexedCollectionValueModel.getCollectionChangeListeners().isEmpty());
+	}
 }
