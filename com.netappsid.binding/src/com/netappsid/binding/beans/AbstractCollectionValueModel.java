@@ -24,8 +24,8 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		@Override
 		public void onCollectionChange(CollectionChangeEvent event)
 		{
-			CollectionChangeEvent collectionChangeEvent = observableCollectionSupport.newCollectionChangeEvent(event.getDifference(), event.getIndex());
-			observableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
+			CollectionChangeEvent collectionChangeEvent = getSupport().newCollectionChangeEvent(event.getDifference(), event.getIndex());
+			getSupport().fireCollectionChangeEvent(collectionChangeEvent);
 		}
 	}
 
@@ -49,8 +49,8 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 			// We need to force a CollectionChange when the value changes to ensure
 			// bound components refreshes their content because the source of there
 			// binding didn't change.
-			CollectionChangeEvent collectionChangeEvent = observableCollectionSupport.newCollectionChangeEvent(difference, -1);
-			observableCollectionSupport.fireCollectionChangeEvent(collectionChangeEvent);
+			CollectionChangeEvent collectionChangeEvent = getSupport().newCollectionChangeEvent(difference, -1);
+			getSupport().fireCollectionChangeEvent(collectionChangeEvent);
 		}
 	}
 
@@ -91,13 +91,13 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	@Override
 	public void addCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
-		observableCollectionSupport.addCollectionChangeListener(listener);
+		getSupport().addCollectionChangeListener(listener);
 	}
 
 	@Override
 	public void removeCollectionChangeListener(CollectionChangeListener<E> listener)
 	{
-		observableCollectionSupport.removeCollectionChangeListener(listener);
+		getSupport().removeCollectionChangeListener(listener);
 	}
 
 	@Override
@@ -110,5 +110,10 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	public void setValue(Object value)
 	{
 		valueModel.setValue(value);
+	}
+
+	protected ObservableCollectionSupport getSupport()
+	{
+		return observableCollectionSupport;
 	}
 }
