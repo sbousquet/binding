@@ -19,7 +19,7 @@ import com.netappsid.observable.ObservableList;
 
 public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E>> extends AbstractValueModel implements CollectionValueModel<E>
 {
-	private final class ModelCollectionChangeHandler implements CollectionChangeListener
+	public final class ModelCollectionChangeHandler implements CollectionChangeListener
 	{
 		@Override
 		public void onCollectionChange(CollectionChangeEvent event)
@@ -29,7 +29,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		}
 	}
 
-	private final class ValueChangeHandler implements PropertyChangeListener
+	public final class ValueChangeHandler implements PropertyChangeListener
 	{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
