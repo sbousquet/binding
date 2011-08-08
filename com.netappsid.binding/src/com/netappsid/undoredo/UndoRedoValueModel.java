@@ -5,7 +5,8 @@ import java.beans.PropertyChangeListener;
 
 import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
-import com.netappsid.binding.beans.support.SwingIdentityPropertyChangeSupport;
+import com.netappsid.binding.beans.support.ChangeSupportFactory;
+import com.netappsid.binding.beans.support.IdentityPropertyChangeSupport;
 import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.observable.ObservableByName;
 
@@ -23,13 +24,13 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 
 	private final T valueModel;
 	private final UndoRedoManager undoRedoManager;
-	private final SwingIdentityPropertyChangeSupport propertyChangeSupport;
+	private final IdentityPropertyChangeSupport propertyChangeSupport;
 
-	public UndoRedoValueModel(UndoRedoManager manager, T valueModel)
+	public UndoRedoValueModel(UndoRedoManager manager, T valueModel, ChangeSupportFactory changeSupportFactory)
 	{
 		this.undoRedoManager = manager;
 		this.valueModel = valueModel;
-		this.propertyChangeSupport = new SwingIdentityPropertyChangeSupport(this);
+		this.propertyChangeSupport = changeSupportFactory.createIdentityPropertyChangeSupport(this);
 		valueModel.addValueChangeListener(new DelegateValueModelValueChangeListener());
 	}
 

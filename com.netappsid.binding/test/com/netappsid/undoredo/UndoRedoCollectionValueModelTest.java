@@ -14,6 +14,7 @@ import org.mockito.InOrder;
 import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
+import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
@@ -46,7 +47,9 @@ public class UndoRedoCollectionValueModelTest
 		when(collectionValueModel.getValue()).thenReturn(newObservableArrayList);
 		listener = mock(CollectionChangeListener.class);
 
-		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, new StandardObservableCollectionSupportFactory());
+		final StandardObservableCollectionSupportFactory collectionSupportFactory = new StandardObservableCollectionSupportFactory();
+		final StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
+		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, collectionSupportFactory, changeSupportFactory);
 
 		oldObject = new Object();
 		newObject = new Object();

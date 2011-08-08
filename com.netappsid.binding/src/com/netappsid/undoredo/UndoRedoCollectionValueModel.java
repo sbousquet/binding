@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import com.google.common.collect.ImmutableList;
 import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.CollectionValueModel;
+import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
@@ -32,9 +33,10 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	private final ObservableCollectionSupport observableCollectionSupport;
 	private final CollectionChangeListener collectionChangeHandler;
 
-	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel, ObservableCollectionSupportFactory observableCollectionSupportFactory)
+	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			ChangeSupportFactory changeSupportFactory)
 	{
-		super(manager, valueModel);
+		super(manager, valueModel, changeSupportFactory);
 
 		collectionChangeHandler = new DelegateCollectionValueModelCollectionChangeListener();
 
