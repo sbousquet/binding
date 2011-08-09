@@ -11,60 +11,60 @@ public class StateModel extends Bean
 {
 	private final List<StateModel> parents = new ArrayList<StateModel>();
 	private final List<StateModel> children = new ArrayList<StateModel>();
-	
+
 	private State state = State.CLEAN;
-	
+
 	public StateModel(ChangeSupportFactory changeSupportFactory)
 	{
 		super(changeSupportFactory);
 	}
-	
-	public final State getState()
+
+	public State getState()
 	{
 		return state;
 	}
-	
-	public final void setState(State state)
+
+	public void setState(State state)
 	{
 		final State oldValue = this.state;
-		
+
 		this.state = state;
-		firePropertyChange(PROPERTYNAME_STATE, oldValue, state);
+		fireIdentityPropertyChange(PROPERTYNAME_STATE, oldValue, state);
 		propagateState(state);
 	}
-	
-	public final void resetState()
+
+	public void resetState()
 	{
 		setState(State.CLEAN);
 	}
-	
-	public final void addStateChangeListener(PropertyChangeListener listener)
+
+	public void addStateChangeListener(PropertyChangeListener listener)
 	{
 		addPropertyChangeListener(PROPERTYNAME_STATE, listener);
 	}
-	
-	public final void removeStateChangeListener(PropertyChangeListener listener)
+
+	public void removeStateChangeListener(PropertyChangeListener listener)
 	{
 		removePropertyChangeListener(PROPERTYNAME_STATE, listener);
 	}
-	
-	public final void link(StateModel stateModel)
-	{		
+
+	public void link(StateModel stateModel)
+	{
 		children.add(stateModel);
 		stateModel.parents.add(this);
-		
+
 		if (stateModel.getState().isBubbling())
 		{
 			setState(stateModel.getState());
 		}
 	}
-	
-	public final void unlink(StateModel stateModel)
+
+	public void unlink(StateModel stateModel)
 	{
 		children.remove(stateModel);
 		stateModel.parents.remove(stateModel);
 	}
-	
+
 	private void propagateState(State state)
 	{
 		if (state.isBubbling())
@@ -76,7 +76,7 @@ public class StateModel extends Bean
 			propagateStateToNodes(state, children);
 		}
 	}
-	
+
 	private void propagateStateToNodes(State state, List<StateModel> nodes)
 	{
 		for (StateModel stateModel : nodes)
@@ -84,6 +84,6 @@ public class StateModel extends Bean
 			stateModel.setState(state);
 		}
 	}
-		
+
 	public static final String PROPERTYNAME_STATE = "state";
 }

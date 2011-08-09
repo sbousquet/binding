@@ -47,13 +47,9 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 			ObservableCollectionSupportFactory observableCollectionSupportFactory)
 	{
 		super(changeSupportFactory);
-
 		this.observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
 		this.valueModel = valueModel;
-
 		installCollectionChangeHandler((ObservableCollection) valueModel.getValue());
-
-		// Listens to the valueChanged to install/uninstall CollectionChange handler
 		valueModel.addValueChangeListener(new ValueChangeHandler());
 	}
 
