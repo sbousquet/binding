@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<properties>
+		<bundle.symbolicName>com.netappsid.binding</bundle.symbolicName>
+		<bundle.namespace>com.netappsid.binding</bundle.namespace>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.netappsid.binding</groupId>
+	<artifactId>com.netappsid.binding</artifactId>
+	<version>2.1.0-SNAPSHOT</version>
+
+	<name>${bundle.symbolicName}</name>
+
+	<packaging>bundle</packaging>
+
+	<scm>
+		<connection>scm:git:git@github.com:360-Innovations/binding.git</connection>
+		<url>scm:git:git@github.com:360-Innovations/binding.git</url>
+		<developerConnection>scm:git:git@github.com:360-Innovations/binding.git</developerConnection>
+	</scm>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<threshold>High</threshold>
+					<effort>Default</effort>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Export-Package>com.netappsid.*</Export-Package>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.2.1</version>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>binding</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netappsid.observable</groupId>
+			<artifactId>com.netappsid.observable</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.0-rc1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.netappsid.test.tools</groupId>
+			<artifactId>com.netappsid.test.tools</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<type>bundle</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.netappsid.validate</groupId>
+			<artifactId>com.netappsid.validate</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
+			<type>bundle</type>
+		</dependency>
+	</dependencies>
+</project>
