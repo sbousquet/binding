@@ -106,39 +106,39 @@ public class UndoRedoManager
 
 	public void rollback(SavePoint savePoint)
 	{
-		if (savePoint != null)
+		UndoRedoOperation origin = (savePoint == null) ? null : savePoint.getOrigin();
+
+		// Do not rollback if the origin is not in currently applied actions. e.g.: it was undone earlier.
+		if (origin == null || getOperations().contains(origin))
 		{
-			UndoRedoOperation origin = savePoint.getOrigin();
+			Iterator<UndoRedoOperation> descendingIterator = getOperations().descendingIterator();
 
-			// Do not rollback if the origin is not in currently applied actions. e.g.: it was undone earlier.
-			if (getOperations().contains(origin))
+			LinkedList<UndoRedoOperation> undoSavePointOperations = new LinkedList<UndoRedoOperation>();
+
+			while (descendingIterator.hasNext())
 			{
-				Iterator<UndoRedoOperation> descendingIterator = getOperations().descendingIterator();
+				UndoRedoOperation undoRedoValueModelAction = descendingIterator.next();
 
-				LinkedList<UndoRedoOperation> undoSavePointOperations = new LinkedList<UndoRedoOperation>();
-
-				while (descendingIterator.hasNext())
+				if (origin != null && undoRedoValueModelAction.equals(origin))
 				{
-					UndoRedoOperation undoRedoValueModelAction = descendingIterator.next();
-
-					if (undoRedoValueModelAction.equals(origin))
-					{
-						break;
-					}
-
-					undoSavePointOperations.addFirst(undoRedoValueModelAction);
-					descendingIterator.remove();
-					undoRedoValueModelAction.undo();
+					break;
 				}
 
-				// No operations were undone, no need for an undo state
-				if (!undoSavePointOperations.isEmpty())
-				{
-					SavePointUndoRedoOperation savePointUndoRedoOperation = new SavePointUndoRedoOperation(undoSavePointOperations);
-					getRedoableOperations().addFirst(savePointUndoRedoOperation);
-				}
+				undoSavePointOperations.addFirst(undoRedoValueModelAction);
+				descendingIterator.remove();
+				undoRedoValueModelAction.undo();
 			}
 
+			// No operations were undone, no need for an undo state
+			if (!undoSavePointOperations.isEmpty())
+			{
+				SavePointUndoRedoOperation savePointUndoRedoOperation = new SavePointUndoRedoOperation(undoSavePointOperations);
+				getRedoableOperations().addFirst(savePointUndoRedoOperation);
+			}
+		}
+
+		if (savePoint != null)
+		{
 			getSavePoints().removeLast();
 		}
 	}

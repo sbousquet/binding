@@ -160,7 +160,7 @@ public class UndoRedoManagerTest
 	}
 
 	@Test
-	public void testRollback_Null()
+	public void testRollback_NullSavePoint_EnsureRollbackAllOperations()
 	{
 		LinkedList<Object> operations = Lists.newLinkedList();
 		operations.add(undoRedoValueModelOperation);
@@ -168,7 +168,11 @@ public class UndoRedoManagerTest
 
 		manager.rollback(null);
 
-		verify(manager, never()).getOperations();
+		// Ensure no one interacts with savePoints since the rollbacked one is null
+		verify(manager, never()).getSavePoints();
+
+		verify(undoRedoValueModelOperation).undo();
+		assertTrue("Operations must be empty", manager.getOperations().isEmpty());
 	}
 
 	@Test
