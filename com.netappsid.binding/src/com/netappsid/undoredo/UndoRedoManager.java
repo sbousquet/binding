@@ -74,12 +74,8 @@ public class UndoRedoManager
 		getRedoableOperations().clear();
 		UndoRedoOperation peekLast = getOperations().peekLast();
 
-		DefaultSavePoint savePoint = (peekLast == null) ? null : new DefaultSavePoint(peekLast);
-
-		if (savePoint != null)
-		{
-			getSavePoints().add(savePoint);
-		}
+		DefaultSavePoint savePoint = new DefaultSavePoint(peekLast);
+		getSavePoints().add(savePoint);
 
 		return savePoint;
 	}
@@ -106,9 +102,10 @@ public class UndoRedoManager
 
 	public void rollback(SavePoint savePoint)
 	{
-		UndoRedoOperation origin = (savePoint == null) ? null : savePoint.getOrigin();
+		UndoRedoOperation origin = savePoint.getOrigin();
 
 		// Do not rollback if the origin is not in currently applied actions. e.g.: it was undone earlier.
+		// origin null means there was no
 		if (origin == null || getOperations().contains(origin))
 		{
 			Iterator<UndoRedoOperation> descendingIterator = getOperations().descendingIterator();
@@ -137,10 +134,7 @@ public class UndoRedoManager
 			}
 		}
 
-		if (savePoint != null)
-		{
-			getSavePoints().removeLast();
-		}
+		getSavePoints().removeLast();
 	}
 
 	protected LinkedList<UndoRedoOperation> getOperations()

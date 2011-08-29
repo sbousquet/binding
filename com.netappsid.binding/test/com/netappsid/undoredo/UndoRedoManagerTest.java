@@ -142,8 +142,10 @@ public class UndoRedoManagerTest
 	@Test
 	public void testCreateSavePoint_NoTransaction()
 	{
-		assertNull("No SavePoint must be returned because there are no operations", manager.createSavePoint());
-		assertTrue(manager.getSavePoints().isEmpty());
+		SavePoint savePoint = manager.createSavePoint();
+		assertNotNull("SavePoint with null origin must be returned because there are no operation", savePoint);
+		assertNull("Origin must be null", savePoint.getOrigin());
+		assertEquals("One SavePoint must be preserved in manager", 1, manager.getSavePoints().size());
 	}
 
 	@Test
@@ -160,16 +162,19 @@ public class UndoRedoManagerTest
 	}
 
 	@Test
-	public void testRollback_NullSavePoint_EnsureRollbackAllOperations()
+	public void testRollback_NoOperations_EnsureRollbackAllOperations()
 	{
 		LinkedList<Object> operations = Lists.newLinkedList();
 		operations.add(undoRedoValueModelOperation);
 		doReturn(operations).when(manager).getOperations();
 
-		manager.rollback(null);
+		SavePoint savePoint = new DefaultSavePoint(null);
 
-		// Ensure no one interacts with savePoints since the rollbacked one is null
-		verify(manager, never()).getSavePoints();
+		LinkedList<Object> savePoints = Lists.newLinkedList();
+		savePoints.add(savePoint);
+		doReturn(savePoints).when(manager).getSavePoints();
+
+		manager.rollback(savePoint);
 
 		verify(undoRedoValueModelOperation).undo();
 		assertTrue("Operations must be empty", manager.getOperations().isEmpty());
