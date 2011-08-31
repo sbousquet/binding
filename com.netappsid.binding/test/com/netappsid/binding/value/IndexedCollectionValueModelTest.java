@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
-import com.netappsid.binding.test.CollectionChangeEventSpy;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
