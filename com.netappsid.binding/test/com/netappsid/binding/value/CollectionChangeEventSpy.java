@@ -1,4 +1,4 @@
-package com.netappsid.binding.test;
+package com.netappsid.binding.value;
 
 import static org.junit.Assert.*;
 
