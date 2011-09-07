@@ -75,20 +75,20 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netappsid.com.jgoodies</groupId>
+			<artifactId>com.netappsid.com.jgoodies.binding</artifactId>
+			<version>2.0.6</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>binding</artifactId>
-			<version>2.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>r09</version>
+			<groupId>com.googlecode.guava-osgi</groupId>
+			<artifactId>guava-osgi</artifactId>
+			<version>9.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.netappsid.observable</groupId>
