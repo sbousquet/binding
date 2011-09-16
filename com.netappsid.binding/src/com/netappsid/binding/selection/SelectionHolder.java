@@ -21,7 +21,7 @@ public class SelectionHolder extends AbstractSelectionModel
 	@Override
 	public SortedSet<Integer> getSelection()
 	{
-		return indexes != null ? new TreeSet<Integer>(indexes) : null;
+		return indexes != null ? new TreeSet<Integer>(indexes) : new TreeSet<Integer>();
 	}
 
 	@Override

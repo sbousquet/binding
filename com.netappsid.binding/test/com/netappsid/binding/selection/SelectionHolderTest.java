@@ -28,7 +28,7 @@ public class SelectionHolderTest
 	public void testSetSelectedItem_NullItem()
 	{
 		selectionHolder.setSelectedItem(null);
-		assertNull(selectionHolder.getSelection());
+		assertTrue(selectionHolder.getSelection().isEmpty());
 	}
 
 	@Test
