@@ -56,13 +56,15 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public boolean contains(Object o)
 	{
-		return validateNotNull(getValue()).contains(o);
+		final ObservableList<T> value = getValue();
+		return (value == null) ? false : value.contains(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return validateNotNull(getValue()).containsAll(c);
+		final ObservableList<T> value = getValue();
+		return (value == null) ? false : value.containsAll(c);
 	}
 
 	@Override
@@ -92,25 +94,29 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public int indexOf(Object o)
 	{
-		return validateNotNull(getValue()).indexOf(o);
+		final ObservableList<T> value = getValue();
+		return (value == null) ? -1 : value.indexOf(o);
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return (getValue() == null) ? true : getValue().isEmpty();
+		final ObservableList<T> value = getValue();
+		return (value == null) ? true : value.isEmpty();
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		return (getValue() == null) ? Collections.EMPTY_LIST.iterator() : getValue().iterator();
+		final ObservableList<T> value = getValue();
+		return (value == null) ? Collections.EMPTY_LIST.iterator() : value.iterator();
 	}
 
 	@Override
 	public int lastIndexOf(Object o)
 	{
-		return validateNotNull(getValue()).lastIndexOf(o);
+		final ObservableList<T> value = getValue();
+		return (value == null) ? -1 : value.lastIndexOf(o);
 	}
 
 	@Override
@@ -158,7 +164,8 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	@Override
 	public int size()
 	{
-		return (getValue() == null) ? 0 : getValue().size();
+		final ObservableList<T> value = getValue();
+		return (value == null) ? 0 : value.size();
 	}
 
 	@Override

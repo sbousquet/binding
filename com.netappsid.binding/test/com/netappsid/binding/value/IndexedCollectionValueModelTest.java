@@ -86,6 +86,18 @@ public class IndexedCollectionValueModelTest
 	}
 
 	@Test
+	public void testIndexOf_NullBean()
+	{
+		assertEquals(-1, indexedCollectionValueModelWithNullBean.indexOf(firstObject));
+	}
+
+	@Test
+	public void testLastIndexOf_NullBean()
+	{
+		assertEquals(-1, indexedCollectionValueModelWithNullBean.lastIndexOf(firstObject));
+	}
+
+	@Test
 	public void testAdd()
 	{
 		indexedCollectionValueModel.add(added1);
@@ -124,7 +136,13 @@ public class IndexedCollectionValueModelTest
 	@Test
 	public void testContains()
 	{
-		assertTrue("FirsObject must be found", indexedCollectionValueModel.contains(firstObject));
+		assertTrue("FirstObject must be found", indexedCollectionValueModel.contains(firstObject));
+	}
+
+	@Test
+	public void testContains_NullBean()
+	{
+		assertFalse("No object must be returned", indexedCollectionValueModelWithNullBean.contains(firstObject));
 	}
 
 	@Test
@@ -134,6 +152,13 @@ public class IndexedCollectionValueModelTest
 		indexedCollectionValueModel.clear();
 		indexedCollectionValueModel.addAll(added);
 		assertTrue("All added must be found", indexedCollectionValueModel.containsAll(added));
+	}
+
+	@Test
+	public void testContainsAll_NullBean()
+	{
+		List added = Arrays.asList(added1, added2);
+		assertFalse("No object must be returned", indexedCollectionValueModelWithNullBean.containsAll(added));
 	}
 
 	@Test
