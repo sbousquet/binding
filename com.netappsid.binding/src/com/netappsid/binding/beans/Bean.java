@@ -8,7 +8,6 @@ import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 
 import com.jgoodies.binding.BindingUtils;
-import com.jgoodies.binding.beans.Observable;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.beans.support.IdentityPropertyChangeSupport;
 import com.netappsid.observable.ObservableByName;
@@ -36,11 +35,13 @@ public abstract class Bean implements ObservableByName, Serializable
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
 
+	@Override
 	public synchronized void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
 	{
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
+	@Override
 	public synchronized void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
 	{
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
@@ -95,7 +96,7 @@ public abstract class Bean implements ObservableByName, Serializable
 	{
 		propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
 	}
-	
+
 	@Deprecated
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue, boolean checkIdentity)
 	{

@@ -28,7 +28,7 @@ public class UndoRedoManager
 		{
 			if (!checkIfOperationIsSavePoint(peekLast))
 			{
-				UndoRedoOperation pollLast = getOperations().pollLast();
+				getOperations().pollLast();
 				getRedoableOperations().addFirst(peekLast);
 				peekLast.undo();
 			}

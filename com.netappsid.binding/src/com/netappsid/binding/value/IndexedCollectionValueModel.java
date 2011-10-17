@@ -181,7 +181,7 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a)
+	public <AT> AT[] toArray(AT[] a)
 	{
 		return validateNotNull(getValue()).toArray(a);
 	}

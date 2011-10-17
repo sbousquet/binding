@@ -115,7 +115,7 @@ public class UndoRedoManagerTest
 	@Test
 	public void testBeginTransaction_NotInTransaction()
 	{
-		boolean transoperationstarted = manager.beginTransaction();
+		manager.beginTransaction();
 		assertTrue("Transaction has just started", manager.isCurrentlyInTransaction());
 	}
 
@@ -156,7 +156,7 @@ public class UndoRedoManagerTest
 		doReturn(operations).when(manager).getOperations();
 
 		SavePoint savePoint = manager.createSavePoint();
-		
+
 		assertEquals("SavePoint", undoRedoValueModelOperation, savePoint.getOrigin());
 		assertEquals("One SavePoint must be preserved in manager", 1, manager.getSavePoints().size());
 	}

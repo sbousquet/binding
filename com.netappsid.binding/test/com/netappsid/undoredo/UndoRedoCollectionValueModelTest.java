@@ -212,7 +212,7 @@ public class UndoRedoCollectionValueModelTest
 	@Test
 	public void testToArray()
 	{
-		Object[] array = undoRedoCollectionValueModel.toArray();
+		undoRedoCollectionValueModel.toArray();
 		verify(collectionValueModel).toArray();
 	}
 
@@ -220,7 +220,7 @@ public class UndoRedoCollectionValueModelTest
 	public void testToArray_Overload()
 	{
 		Object[] targetArrayType = new Object[] {};
-		Object[] array = undoRedoCollectionValueModel.toArray(targetArrayType);
+		undoRedoCollectionValueModel.toArray(targetArrayType);
 		verify(collectionValueModel).toArray(targetArrayType);
 	}
 
