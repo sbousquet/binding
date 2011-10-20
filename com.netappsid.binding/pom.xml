@@ -2,24 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<properties>
-		<bundle.symbolicName>com.netappsid.binding</bundle.symbolicName>
-		<bundle.namespace>com.netappsid.binding</bundle.namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.netappsid.binding</groupId>
-	<artifactId>com.netappsid.binding</artifactId>
+	<groupId>com.netappsid</groupId>
+	<artifactId>binding</artifactId>
 	<version>2.1.0-SNAPSHOT</version>
-
-	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 
 	<scm>
 		<connection>scm:git:git@github.com:360-Innovations/binding.git</connection>
 		<url>scm:git:git@github.com:360-Innovations/binding.git</url>
-		<developerConnection>scm:git:git@github.com:360-Innovations/binding.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com/360-Innovations/binding.git</developerConnection>
 	</scm>
 
 	<build>
@@ -52,15 +48,31 @@
 				<extensions>true</extensions>
 				<configuration>
 					<manifestLocation>META-INF</manifestLocation>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.2.1</version>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -90,9 +102,9 @@
 			<version>9.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.netappsid.observable</groupId>
-			<artifactId>com.netappsid.observable</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<groupId>com.netappsid</groupId>
+			<artifactId>observable</artifactId>
+			<version>[1.0.0,2.0.0)</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
@@ -116,15 +128,23 @@
 		<dependency>
 			<groupId>com.netappsid.test.tools</groupId>
 			<artifactId>com.netappsid.test.tools</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<version>[2.0.0,3.0.0)</version>
 			<type>bundle</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.netappsid.validate</groupId>
-			<artifactId>com.netappsid.validate</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
+			<groupId>com.netappsid</groupId>
+			<artifactId>validate</artifactId>
+			<version>[1.1.0,2.0.0)</version>
 			<type>bundle</type>
 		</dependency>
 	</dependencies>
+	
+		<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<url>http://nexus.netappsid.com:8081/nexus/content/repositories/releases</url>
+		</repository>
+	</distributionManagement>
+	
 </project>
