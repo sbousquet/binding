@@ -63,30 +63,6 @@ public class DefaultPresentationModel extends PresentationModel
 	}
 
 	@Override
-	public PresentationModel getSubModel(String modelName)
-	{
-		if (modelName.contains("."))
-		{
-			final String propertyName = modelName.substring(0, modelName.indexOf('.'));
-			final String subModelName = modelName.substring(modelName.indexOf('.') + 1);
-
-			return getSubModel(propertyName).getSubModel(subModelName);
-		}
-		else
-		{
-			if (!getSubModels().containsKey(modelName))
-			{
-				final PresentationModel subModel = PresentationModelFactory.createPresentationModel(this, modelName);
-
-				getSubModels().put(modelName, subModel);
-				stateModel.link(subModel.getStateModel());
-			}
-
-			return getSubModels().get(modelName);
-		}
-	}
-
-	@Override
 	public Object getValue(String propertyName)
 	{
 		return getValueModel(propertyName).getValue();

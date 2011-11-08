@@ -91,13 +91,35 @@ public abstract class PresentationModel extends Bean
 	 * <code>PresentationModel</code> for the last property in the path will be returned. The property name delimiter is the character '.'.
 	 * </p>
 	 * 
-	 * @param propertyName
+	 * @param modelName
 	 *            the name of the property to adapt or a complex property name path delimited by '.'
 	 * @return a <code>PresentationModel</code> that adapts the specified property value.
 	 * 
 	 * @see PresentationModelFactory
 	 */
-	public abstract PresentationModel getSubModel(String propertyName);
+	public PresentationModel getSubModel(String modelName)
+	{
+		if (modelName.contains("."))
+		{
+			final String propertyName = modelName.substring(0, modelName.indexOf('.'));
+			final String subModelName = modelName.substring(modelName.indexOf('.') + 1);
+
+			return getSubModel(propertyName).getSubModel(subModelName);
+		}
+		else
+		{
+			PresentationModel subModel = getSubModels().get(modelName);
+			if (subModel == null)
+			{
+				subModel = PresentationModelFactory.createPresentationModel(this, modelName);
+
+				getSubModels().put(modelName, subModel);
+				getStateModel().link(subModel.getStateModel());
+			}
+
+			return subModel;
+		}
+	}
 
 	/**
 	 * <p>

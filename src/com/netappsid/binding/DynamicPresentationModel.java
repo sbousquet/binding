@@ -22,6 +22,7 @@ public class DynamicPresentationModel extends PresentationModel
 
 	private final ValueModel mapChannel;
 	private final PropertyChangeSupport propertyChangeSupport;
+	private final StateModel stateModel;
 	private Map<String, ValueModel> valueModels;
 	private Map<ValueModel, String> valueModelNames;
 
@@ -42,6 +43,7 @@ public class DynamicPresentationModel extends PresentationModel
 		super(changeSupportFactory, observableCollectionSupportFactory);
 		this.mapChannel = Validate.notNull(mapChannel, "Map Channel cannot be null.");
 		this.propertyChangeSupport = new PropertyChangeSupport(mapChannel);
+		this.stateModel = new StateModel(changeSupportFactory);
 
 		setBeanClass(Map.class);
 		mapChannel.addValueChangeListener(new MapChangeHandler());
@@ -57,38 +59,6 @@ public class DynamicPresentationModel extends PresentationModel
 	public ValueModel getBeanChannel()
 	{
 		return mapChannel;
-	}
-
-	@Override
-	public PresentationModel getSubModel(String propertyName)
-	{
-		PresentationModel subModel = null;
-		int index = propertyName.indexOf('.');
-
-		if (index == -1)
-		{
-			subModel = getSubModels().get(propertyName);
-
-			if (subModel == null)
-			{
-				subModel = PresentationModelFactory.createPresentationModel(this, propertyName);
-				getSubModels().put(propertyName, subModel);
-			}
-		}
-		else
-		{
-			subModel = getSubModels().get(propertyName.substring(0, index));
-
-			if (subModel == null)
-			{
-				subModel = PresentationModelFactory.createPresentationModel(this, propertyName.substring(0, index));
-				getSubModels().put(propertyName.substring(0, index), subModel);
-			}
-
-			subModel = subModel.getSubModel(propertyName.substring(index + 1, propertyName.length()));
-		}
-
-		return subModel;
 	}
 
 	@Override
@@ -159,7 +129,7 @@ public class DynamicPresentationModel extends PresentationModel
 	@Override
 	public StateModel getStateModel()
 	{
-		return null;
+		return stateModel;
 	}
 
 	private Map<ValueModel, String> getValueModelNames()
