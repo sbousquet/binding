@@ -74,15 +74,16 @@ public class DefaultPresentationModel extends PresentationModel
 		}
 		else
 		{
-			if (!getSubModels().containsKey(modelName))
+			PresentationModel subModel = getSubModels().get(modelName);
+			if (subModel == null)
 			{
-				final PresentationModel subModel = PresentationModelFactory.createPresentationModel(this, modelName);
+				subModel = PresentationModelFactory.createPresentationModel(this, modelName);
 
 				getSubModels().put(modelName, subModel);
 				stateModel.link(subModel.getStateModel());
 			}
 
-			return getSubModels().get(modelName);
+			return subModel;
 		}
 	}
 
