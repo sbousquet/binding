@@ -104,38 +104,6 @@ public class SelectionPresentationModel extends PresentationModel
 	}
 
 	@Override
-	public PresentationModel getSubModel(String propertyName)
-	{
-		PresentationModel subModel = null;
-		int index = propertyName.indexOf('.');
-
-		if (index == -1)
-		{
-			subModel = getSubModels().get(propertyName);
-
-			if (subModel == null)
-			{
-				subModel = PresentationModelFactory.createPresentationModel(this, propertyName);
-				getSubModels().put(propertyName, subModel);
-			}
-		}
-		else
-		{
-			subModel = getSubModels().get(propertyName.substring(0, index));
-
-			if (subModel == null)
-			{
-				subModel = PresentationModelFactory.createPresentationModel(this, propertyName.substring(0, index));
-				getSubModels().put(propertyName.substring(0, index), subModel);
-			}
-
-			subModel = subModel.getSubModel(propertyName.substring(index + 1, propertyName.length()));
-		}
-
-		return subModel;
-	}
-
-	@Override
 	public Object getValue(String propertyName)
 	{
 		return getValueModel(propertyName).getValue();
