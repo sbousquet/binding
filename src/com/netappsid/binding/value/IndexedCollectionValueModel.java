@@ -12,6 +12,7 @@ import com.netappsid.binding.beans.AbstractCollectionValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.observable.BatchAction;
 import com.netappsid.observable.CollectionChangeListener;
+import com.netappsid.observable.CollectionDifference;
 import com.netappsid.observable.ObservableCollectionSupportFactory;
 import com.netappsid.observable.ObservableList;
 
@@ -51,6 +52,28 @@ public class IndexedCollectionValueModel<T> extends AbstractCollectionValueModel
 	public void clear()
 	{
 		validateNotNull(getValue()).clear();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.netappsid.observable.ObservableCollection#apply(com.netappsid.observable.CollectionDifference)
+	 */
+	@Override
+	public void apply(CollectionDifference<T> difference)
+	{
+		validateNotNull(getValue()).apply(difference);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.netappsid.observable.ObservableCollection#unapply(com.netappsid.observable.CollectionDifference)
+	 */
+	@Override
+	public void unapply(CollectionDifference<T> difference)
+	{
+		validateNotNull(getValue()).unapply(difference);
 	}
 
 	@Override
