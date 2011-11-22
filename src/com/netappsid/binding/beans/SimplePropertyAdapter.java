@@ -11,7 +11,7 @@ import com.netappsid.binding.value.AbstractValueModel;
 public class SimplePropertyAdapter extends AbstractValueModel
 {
 	private static final Logger LOGGER = Logger.getLogger(SimplePropertyAdapter.class);
-	
+
 	private final BeanAdapter beanAdapter;
 	private final String propertyName;
 
@@ -37,7 +37,14 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
 
-		return propertyDescriptor != null ? BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor) : null;
+		if (propertyDescriptor != null && beanAdapter.getBean() != null)
+		{
+			return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	@Override
@@ -45,12 +52,12 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
 
-		if(propertyDescriptor == null)
+		if (beanAdapter.getBean() == null)
 		{
 			try
 			{
 				Object newInstance = beanAdapter.getBeanClass().newInstance();
-				beanAdapter.getBeanChannel().setValue(newInstance);
+				beanAdapter.setBean(newInstance);
 				propertyDescriptor = getPropertyDescriptor();
 			}
 			catch (Exception e)
@@ -58,7 +65,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 				LOGGER.error(e, e);
 			}
 		}
-		
+
 		if (propertyDescriptor != null)
 		{
 			try
@@ -75,7 +82,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	protected void fireChange(Object currentBean)
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor(currentBean);
-		
+
 		if (propertyDescriptor != null && propertyDescriptor.getReadMethod() != null)
 		{
 			fireValueChange(null, BeanUtils.getValue(currentBean, propertyDescriptor));
@@ -90,7 +97,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		final PropertyDescriptor oldBeanPropertyDescriptor = getPropertyDescriptor(oldBean);
 		final PropertyDescriptor newBeanPropertyDescriptor = getPropertyDescriptor(newBean);
-		
+
 		Object oldValue = null;
 		Object newValue = null;
 
@@ -98,7 +105,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		{
 			oldValue = BeanUtils.getValue(oldBean, oldBeanPropertyDescriptor);
 		}
-		
+
 		if (newBeanPropertyDescriptor != null && newBeanPropertyDescriptor.getReadMethod() != null)
 		{
 			newValue = BeanUtils.getValue(newBean, newBeanPropertyDescriptor);
@@ -109,7 +116,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 			fireValueChange(oldValue, newValue, true);
 		}
 	}
-	
+
 	@Override
 	protected String paramString()
 	{
@@ -120,7 +127,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		String propertyDescriptorName = null;
 		String propertyType = null;
 		Method propertySetter = null;
-		
+
 		if (bean != null)
 		{
 			beanType = bean.getClass().getName();
@@ -130,16 +137,17 @@ public class SimplePropertyAdapter extends AbstractValueModel
 			propertyType = propertyDescriptor != null ? propertyDescriptor.getPropertyType().getName() : null;
 			propertySetter = propertyDescriptor != null ? propertyDescriptor.getWriteMethod() : null;
 		}
-		
+
 		return "bean=" + bean + "; bean type=" + beanType + "; value=" + value + "; value type=" + valueType + "; property name=" + propertyDescriptorName
 				+ "; property type=" + propertyType + "; property setter=" + propertySetter;
 	}
-	
+
 	private PropertyDescriptor getPropertyDescriptor(Object bean)
 	{
 		try
 		{
-			return bean != null ? BeanUtils.getPropertyDescriptor(bean.getClass(), propertyName) : null;
+			Class<? extends Object> beanClass = bean != null ? bean.getClass() : beanAdapter.getBeanClass();
+			return BeanUtils.getPropertyDescriptor(beanClass, propertyName);
 		}
 		catch (Exception e)
 		{

@@ -18,6 +18,7 @@ import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
+import com.netappsid.observable.CollectionDifference;
 import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
@@ -95,8 +96,7 @@ public class UndoRedoCollectionValueModelTest
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
 		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
-		verify(collectionValueModel).add(oldObject);
-		verify(collectionValueModel).remove(newObject);
+		verify(collectionValueModel).unapply(any(CollectionDifference.class));
 	}
 
 	@Test
@@ -115,8 +115,7 @@ public class UndoRedoCollectionValueModelTest
 		inOrder.verify(undoRedoManager, never()).push(any(CollectionChangeOperation.class));
 		inOrder.verify(collectionValueModel).addCollectionChangeListener(undoRedoCollectionValueModel.getUndoRedoManagerPushHandler());
 
-		verify(collectionValueModel).remove(oldObject);
-		verify(collectionValueModel).add(newObject);
+		verify(collectionValueModel).apply(any(CollectionDifference.class));
 	}
 
 	@Test
