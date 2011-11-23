@@ -101,12 +101,12 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		Object oldValue = null;
 		Object newValue = null;
 
-		if (oldBeanPropertyDescriptor != null && oldBeanPropertyDescriptor.getReadMethod() != null)
+		if (oldBean != null && oldBeanPropertyDescriptor != null && oldBeanPropertyDescriptor.getReadMethod() != null)
 		{
 			oldValue = BeanUtils.getValue(oldBean, oldBeanPropertyDescriptor);
 		}
 
-		if (newBeanPropertyDescriptor != null && newBeanPropertyDescriptor.getReadMethod() != null)
+		if (newBean != null && newBeanPropertyDescriptor != null && newBeanPropertyDescriptor.getReadMethod() != null)
 		{
 			newValue = BeanUtils.getValue(newBean, newBeanPropertyDescriptor);
 		}
