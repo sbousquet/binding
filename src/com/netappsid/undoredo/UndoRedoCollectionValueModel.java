@@ -70,16 +70,8 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 			CollectionDifference difference = event.getDifference();
 
 			ObservableCollection source = getValueModel();
+			source.unapply(difference);
 
-			for (Object added : difference.getAdded())
-			{
-				source.remove(added);
-			}
-
-			for (Object removed : difference.getRemoved())
-			{
-				source.add(removed);
-			}
 		}
 		finally
 		{
@@ -101,15 +93,8 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 			// containing the same objects is recreated
 			ObservableCollection source = getValueModel();
 
-			for (Object added : difference.getAdded())
-			{
-				source.add(added);
-			}
+			source.apply(difference);
 
-			for (Object removed : difference.getRemoved())
-			{
-				source.remove(removed);
-			}
 		}
 		finally
 		{
@@ -260,6 +245,28 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	public List<E> subList(int fromIndex, int toIndex)
 	{
 		return getValueModel().subList(fromIndex, toIndex);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.netappsid.observable.ObservableCollection#apply(com.netappsid.observable.CollectionDifference)
+	 */
+	@Override
+	public void apply(CollectionDifference<E> difference)
+	{
+		getValueModel().apply(difference);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.netappsid.observable.ObservableCollection#unapply(com.netappsid.observable.CollectionDifference)
+	 */
+	@Override
+	public void unapply(CollectionDifference<E> difference)
+	{
+		getValueModel().unapply(difference);
 	}
 
 	@Override
