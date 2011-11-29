@@ -2,6 +2,7 @@ package com.netappsid.undoredo;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UndoRedoManager
 {
@@ -9,7 +10,7 @@ public class UndoRedoManager
 	private final LinkedList<UndoRedoOperation> redoableOperations = new LinkedList<UndoRedoOperation>();
 	private final LinkedList<SavePoint> savePoints = new LinkedList<SavePoint>();
 
-	private int transactionCount = 0;
+	private final AtomicInteger transactionCount = new AtomicInteger(0);
 
 	public void push(UndoRedoOperation operation)
 	{
@@ -60,12 +61,12 @@ public class UndoRedoManager
 
 	public boolean beginTransaction()
 	{
-		return ++transactionCount == 1;
+		return transactionCount.incrementAndGet() == 1;
 	}
 
 	public void endTransaction()
 	{
-		transactionCount--;
+		transactionCount.decrementAndGet();
 	}
 
 	public SavePoint createSavePoint()
@@ -102,39 +103,49 @@ public class UndoRedoManager
 
 	public void rollback(SavePoint savePoint)
 	{
-		UndoRedoOperation origin = savePoint.getOrigin();
-
-		// Do not rollback if the origin is not in currently applied actions. e.g.: it was undone earlier.
-		// origin null means there was no
-		if (origin == null || getOperations().contains(origin))
+		try
 		{
-			Iterator<UndoRedoOperation> descendingIterator = getOperations().descendingIterator();
+			beginTransaction();
 
-			LinkedList<UndoRedoOperation> undoSavePointOperations = new LinkedList<UndoRedoOperation>();
+			UndoRedoOperation origin = savePoint.getOrigin();
 
-			while (descendingIterator.hasNext())
+			// Do not rollback if the origin is not in currently applied actions. e.g.: it was undone earlier.
+			// origin null means there was no
+			if (origin == null || getOperations().contains(origin))
 			{
-				UndoRedoOperation undoRedoValueModelAction = descendingIterator.next();
+				Iterator<UndoRedoOperation> descendingIterator = getOperations().descendingIterator();
 
-				if (origin != null && undoRedoValueModelAction.equals(origin))
+				LinkedList<UndoRedoOperation> undoSavePointOperations = new LinkedList<UndoRedoOperation>();
+
+				while (descendingIterator.hasNext())
 				{
-					break;
+					UndoRedoOperation undoRedoValueModelAction = descendingIterator.next();
+
+					if (origin != null && undoRedoValueModelAction.equals(origin))
+					{
+						break;
+					}
+
+					undoSavePointOperations.addFirst(undoRedoValueModelAction);
+					descendingIterator.remove();
+					undoRedoValueModelAction.undo();
 				}
 
-				undoSavePointOperations.addFirst(undoRedoValueModelAction);
-				descendingIterator.remove();
-				undoRedoValueModelAction.undo();
+				// No operations were undone, no need for an undo state
+				if (!undoSavePointOperations.isEmpty())
+				{
+					SavePointUndoRedoOperation savePointUndoRedoOperation = new SavePointUndoRedoOperation(undoSavePointOperations);
+					getRedoableOperations().addFirst(savePointUndoRedoOperation);
+				}
 			}
 
-			// No operations were undone, no need for an undo state
-			if (!undoSavePointOperations.isEmpty())
-			{
-				SavePointUndoRedoOperation savePointUndoRedoOperation = new SavePointUndoRedoOperation(undoSavePointOperations);
-				getRedoableOperations().addFirst(savePointUndoRedoOperation);
-			}
+			getSavePoints().removeLast();
+		}
+		finally
+		{
+			endTransaction();
 		}
 
-		getSavePoints().removeLast();
 	}
 
 	protected LinkedList<UndoRedoOperation> getOperations()
@@ -149,7 +160,7 @@ public class UndoRedoManager
 
 	protected boolean isCurrentlyInTransaction()
 	{
-		return transactionCount > 0;
+		return transactionCount.get() > 0;
 	}
 
 	protected LinkedList<SavePoint> getSavePoints()
@@ -162,5 +173,6 @@ public class UndoRedoManager
 		getOperations().clear();
 		getRedoableOperations().clear();
 		getSavePoints().clear();
+		transactionCount.set(0);
 	}
 }
