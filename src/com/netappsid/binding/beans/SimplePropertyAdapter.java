@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Defaults;
+import com.jgoodies.binding.beans.PropertyAccessException;
 import com.netappsid.binding.value.AbstractValueModel;
 
 public class SimplePropertyAdapter extends AbstractValueModel
@@ -38,20 +39,9 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
 
-		if (propertyDescriptor != null)
+		if (propertyDescriptor != null && beanAdapter.getBean() != null)
 		{
-			if (beanAdapter.getBean() != null)
-			{
-				return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
-			}
-			else
-			{
-				// Ensure to return the default value of a primitive type instead of null
-				Method readMethod = propertyDescriptor.getReadMethod();
-				Class<?> returnType = (readMethod == null) ? null : readMethod.getReturnType();
-				boolean isPrimitive = (returnType == null) ? false : returnType.isPrimitive();
-				return (isPrimitive) ? Defaults.defaultValue(returnType) : null;
-			}
+			return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
 		}
 		else
 		{
@@ -82,7 +72,26 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		{
 			try
 			{
-				BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, newValue);
+				try
+				{
+					BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, newValue);
+				}
+				catch (PropertyAccessException e)
+				{
+					// Fallback for null values that can't be assigned to primitive types
+					if (newValue == null)
+					{
+						// Ensure to return the default value of a primitive type instead of null
+						Method readMethod = propertyDescriptor.getReadMethod();
+						Class<?> returnType = (readMethod == null) ? null : readMethod.getReturnType();
+						boolean isPrimitive = (returnType == null) ? false : returnType.isPrimitive();
+						if (isPrimitive)
+						{
+							Object defaultValue = Defaults.defaultValue(returnType);
+							BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, defaultValue);
+						}
+					}
+				}
 			}
 			catch (PropertyVetoException e)
 			{

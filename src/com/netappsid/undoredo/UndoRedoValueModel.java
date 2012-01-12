@@ -82,7 +82,7 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 
 	public void undo(UndoRedoValue undoRedoValue)
 	{
-		getValueModel().setValue(undoRedoValue.getOldValue());
+			getValueModel().setValue(undoRedoValue.getOldValue());
 	}
 
 	public ValueModel getDelegate()
