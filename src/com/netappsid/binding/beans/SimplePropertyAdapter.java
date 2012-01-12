@@ -38,20 +38,9 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
 
-		if (propertyDescriptor != null)
+		if (propertyDescriptor != null && beanAdapter.getBean() != null)
 		{
-			if (beanAdapter.getBean() != null)
-			{
-				return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
-			}
-			else
-			{
-				// Ensure to return the default value of a primitive type instead of null
-				Method readMethod = propertyDescriptor.getReadMethod();
-				Class<?> returnType = (readMethod == null) ? null : readMethod.getReturnType();
-				boolean isPrimitive = (returnType == null) ? false : returnType.isPrimitive();
-				return (isPrimitive) ? Defaults.defaultValue(returnType) : null;
-			}
+			return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
 		}
 		else
 		{
@@ -82,7 +71,14 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		{
 			try
 			{
-				BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, newValue);
+				Object effectiveNewValue = newValue;
+
+				if (effectiveNewValue == null && propertyDescriptor.getPropertyType().isPrimitive())
+				{
+					effectiveNewValue = Defaults.defaultValue(propertyDescriptor.getPropertyType());
+				}
+
+				BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, effectiveNewValue);
 			}
 			catch (PropertyVetoException e)
 			{
