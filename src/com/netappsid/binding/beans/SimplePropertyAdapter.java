@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Defaults;
-import com.jgoodies.binding.beans.PropertyAccessException;
 import com.netappsid.binding.value.AbstractValueModel;
 
 public class SimplePropertyAdapter extends AbstractValueModel
@@ -72,26 +71,14 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		{
 			try
 			{
-				try
+				Object effectiveNewValue = newValue;
+
+				if (effectiveNewValue == null && propertyDescriptor.getPropertyType().isPrimitive())
 				{
-					BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, newValue);
+					effectiveNewValue = Defaults.defaultValue(propertyDescriptor.getPropertyType());
 				}
-				catch (PropertyAccessException e)
-				{
-					// Fallback for null values that can't be assigned to primitive types
-					if (newValue == null)
-					{
-						// Ensure to return the default value of a primitive type instead of null
-						Method readMethod = propertyDescriptor.getReadMethod();
-						Class<?> returnType = (readMethod == null) ? null : readMethod.getReturnType();
-						boolean isPrimitive = (returnType == null) ? false : returnType.isPrimitive();
-						if (isPrimitive)
-						{
-							Object defaultValue = Defaults.defaultValue(returnType);
-							BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, defaultValue);
-						}
-					}
-				}
+
+				BeanUtils.setValue(beanAdapter.getBean(), propertyDescriptor, effectiveNewValue);
 			}
 			catch (PropertyVetoException e)
 			{
