@@ -44,7 +44,7 @@ public class SimplePropertyAdapterTest
 	}
 
 	@Test
-	public void testGetValue_NullBeanReturnsNull()
+	public void testGetValue_NullBean_NonPrimitiveType_ReturnsNull()
 	{
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
 
@@ -52,7 +52,7 @@ public class SimplePropertyAdapterTest
 	}
 
 	@Test
-	public void testGetValue_NonAdaptablePropertyReturnsNull()
+	public void testGetValue_NonAdaptableNonPrimitiveProperty_ReturnsNull()
 	{
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), "nonExisting");
 
@@ -60,7 +60,7 @@ public class SimplePropertyAdapterTest
 	}
 
 	@Test
-	public void testGetValue_AdaptablePropertyReturnsBeanPropertyValue()
+	public void testGetValue_AdaptableNonPrimitiveProperty_ReturnsBeanPropertyValue()
 	{
 		final TestBean bean = new TestBean("1");
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(bean, TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
@@ -70,7 +70,7 @@ public class SimplePropertyAdapterTest
 	}
 
 	@Test
-	public void testSetValue_NonAdaptablePropertyDoesntGenerateException()
+	public void testSetValue_NonAdaptableNonPrimitiveProperty_DoesntGenerateException()
 	{
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(new TestBean("1"), TestBean.class), "nonExisting");
 
@@ -85,7 +85,7 @@ public class SimplePropertyAdapterTest
 	}
 
 	@Test
-	public void testSetValue_AdaptablePropertySetsBeanValue()
+	public void testSetValue_AdaptableNonPrimitiveProperty_SetsBeanValue()
 	{
 		final TestBean bean = new TestBean("1");
 		final SimplePropertyAdapter adapter = new SimplePropertyAdapter(newBeanAdapter(bean, TestBean.class), TestBean.PROPERTYNAME_PROPERTY1);
@@ -116,6 +116,27 @@ public class SimplePropertyAdapterTest
 		BeanAdapter newBeanAdapter = newBeanAdapter(TestBean.class);
 		PropertyDescriptor propertyDescriptor = newBeanAdapter.getValueModel(TestBean.PROPERTYNAME_BEAN1).getPropertyDescriptor();
 		assertNotNull(propertyDescriptor);
+	}
+
+	@Test
+	public void testGetValue_NullBean_PrimitiveTypeProperty_EnsureNotNull()
+	{
+		BeanAdapter newBeanAdapter = newBeanAdapter(FakeBean.class);
+		Object value = newBeanAdapter.getValueModel(FakeBean.PROPERTYNAME_BOOLEANPROPERTY).getValue();
+		assertNotNull(value);
+	}
+
+	@Test
+	public void testGetValue_ValidBean_PrimitiveTypeProperty_EnsureNotNull()
+	{
+		FakeBean newBean = new FakeBean();
+		newBean.setBooleanProperty(true);
+
+		BeanAdapter newBeanAdapter = newBeanAdapter(FakeBean.class);
+		newBeanAdapter.setBean(newBean);
+
+		Object value = newBeanAdapter.getValueModel(FakeBean.PROPERTYNAME_BOOLEANPROPERTY).getValue();
+		assertTrue((Boolean) value);
 	}
 
 	private BeanAdapter newBeanAdapter(Class beanClass)
