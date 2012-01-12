@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Defaults;
 import com.netappsid.binding.value.AbstractValueModel;
 
 public class SimplePropertyAdapter extends AbstractValueModel
@@ -37,9 +38,20 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
 
-		if (propertyDescriptor != null && beanAdapter.getBean() != null)
+		if (propertyDescriptor != null)
 		{
-			return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
+			if (beanAdapter.getBean() != null)
+			{
+				return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
+			}
+			else
+			{
+				// Ensure to return the default value of a primitive type instead of null
+				Method readMethod = propertyDescriptor.getReadMethod();
+				Class<?> returnType = (readMethod == null) ? null : readMethod.getReturnType();
+				boolean isPrimitive = (returnType == null) ? false : returnType.isPrimitive();
+				return (isPrimitive) ? Defaults.defaultValue(returnType) : null;
+			}
 		}
 		else
 		{
