@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.jgoodies.binding.beans.PropertyUnboundException;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
@@ -223,7 +224,7 @@ public class BeanAdapter extends Bean
 
 		private void forwardAllAdaptedValuesChanged(Object oldBean, Object newBean)
 		{
-			for (SimplePropertyAdapter adapter : propertyAdapters.values())
+			for (SimplePropertyAdapter adapter : Lists.newArrayList(propertyAdapters.values()))
 			{
 				adapter.setBean(oldBean, newBean);
 			}
@@ -254,7 +255,7 @@ public class BeanAdapter extends Bean
 		{
 			final Object currentBean = getBean();
 
-			for (SimplePropertyAdapter adapter : propertyAdapters.values())
+			for (SimplePropertyAdapter adapter : Lists.newArrayList(propertyAdapters.values()))
 			{
 				adapter.fireChange(currentBean);
 			}
