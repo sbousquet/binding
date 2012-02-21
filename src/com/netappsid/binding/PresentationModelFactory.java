@@ -27,7 +27,8 @@ public class PresentationModelFactory
 
 			if (propertyDescriptor == null)
 			{
-				throw new IllegalArgumentException();
+				String safePropertyName = (propertyName == null) ? "NULL" : propertyName;
+				throw new IllegalArgumentException("Unable to create PresentationModel for propertyName " + safePropertyName);
 			}
 			else if (List.class.isAssignableFrom(propertyDescriptor.getPropertyType()))
 			{
