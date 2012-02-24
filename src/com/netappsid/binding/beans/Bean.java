@@ -97,19 +97,6 @@ public abstract class Bean implements ObservableByName, Serializable
 		propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
 	}
 
-	@Deprecated
-	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue, boolean checkIdentity)
-	{
-		if (checkIdentity)
-		{
-			fireIdentityPropertyChange(propertyName, oldValue, newValue);
-		}
-		else
-		{
-			firePropertyChange(propertyName, oldValue, newValue);
-		}
-	}
-
 	protected void fireIdentityPropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
 		propertyChangeSupport.fireIdentityPropertyChange(propertyName, oldValue, newValue);
