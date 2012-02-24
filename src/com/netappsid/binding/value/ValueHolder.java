@@ -2,7 +2,7 @@ package com.netappsid.binding.value;
 
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 
-public final class ValueHolder extends AbstractValueModel
+public class ValueHolder extends AbstractValueModel
 {
 	private Object value;
 	private boolean checkIdentity;
@@ -11,7 +11,7 @@ public final class ValueHolder extends AbstractValueModel
 	{
 		this(changeSupportFactory, null);
 	}
-	
+
 	public ValueHolder(ChangeSupportFactory changeSupportFactory, Object initialValue)
 	{
 		this(changeSupportFactory, initialValue, false);
@@ -24,11 +24,13 @@ public final class ValueHolder extends AbstractValueModel
 		this.checkIdentity = checkIdentity;
 	}
 
+	@Override
 	public Object getValue()
 	{
 		return value;
 	}
 
+	@Override
 	public void setValue(Object newValue)
 	{
 		setValue(newValue, isIdentityCheckEnabled());
