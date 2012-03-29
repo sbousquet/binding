@@ -18,7 +18,7 @@ import com.netappsid.validate.Validate;
 @SuppressWarnings("serial")
 public class DynamicPresentationModel extends PresentationModel
 {
-	private final PropertyChangeListener mappedValueChangeHandler = new MappedValueChangeHandler();
+	private final PropertyChangeListener mappedValueChangeHandler;
 
 	private final ValueModel mapChannel;
 	private final PropertyChangeSupport propertyChangeSupport;
@@ -41,12 +41,15 @@ public class DynamicPresentationModel extends PresentationModel
 			ValueModel mapChannel)
 	{
 		super(changeSupportFactory, observableCollectionSupportFactory);
+
 		this.mapChannel = Validate.notNull(mapChannel, "Map Channel cannot be null.");
 		this.propertyChangeSupport = new PropertyChangeSupport(mapChannel);
 		this.stateModel = new StateModel(changeSupportFactory);
 
 		setBeanClass(Map.class);
-		mapChannel.addValueChangeListener(new MapChangeHandler());
+		mapChannel.addValueChangeListener(new MapChangeHandler(this));
+		
+		mappedValueChangeHandler = new MappedValueChangeHandler(this);
 	}
 
 	@Override
@@ -75,15 +78,24 @@ public class DynamicPresentationModel extends PresentationModel
 			setBean(new HashMap<String, Object>());
 		}
 
-		return getValueModels().containsKey(propertyName) ? getValueModels().get(propertyName) : registerValueModel(propertyName);
+		ValueModel valueModel = getValueModels().get(propertyName);
+
+		if (valueModel == null)
+		{
+			valueModel = registerValueModel(propertyName);
+		}
+
+		return valueModel;
 	}
 
 	@Override
 	public void releaseBeanListeners()
 	{
-		if (getPropertyChangeListeners() != null)
+		PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
+
+		if (propertyChangeListeners != null)
 		{
-			for (PropertyChangeListener listener : getPropertyChangeListeners())
+			for (PropertyChangeListener listener : propertyChangeListeners)
 			{
 				if (listener instanceof PropertyChangeListenerProxy)
 				{
@@ -132,7 +144,7 @@ public class DynamicPresentationModel extends PresentationModel
 		return stateModel;
 	}
 
-	private Map<ValueModel, String> getValueModelNames()
+	protected Map<ValueModel, String> getValueModelNames()
 	{
 		if (valueModelNames == null)
 		{
@@ -142,7 +154,7 @@ public class DynamicPresentationModel extends PresentationModel
 		return valueModelNames;
 	}
 
-	private Map<String, ValueModel> getValueModels()
+	protected Map<String, ValueModel> getValueModels()
 	{
 		if (valueModels == null)
 		{
@@ -153,58 +165,93 @@ public class DynamicPresentationModel extends PresentationModel
 	}
 
 	@SuppressWarnings("unchecked")
-	private ValueModel registerValueModel(String propertyName)
+	protected ValueModel registerValueModel(String propertyName)
 	{
-		ValueModel valueModel;
+		Map map = (Map) getBean();
 
-		if (!((Map) getBean()).containsKey(propertyName))
+		if (!map.containsKey(propertyName))
 		{
-			((Map) getBean()).put(propertyName, (Object) null);
+			map.put(propertyName, (Object) null);
 		}
 
-		valueModel = new ValueHolder(getChangeSupportFactory(), ((Map) getBean()).get(propertyName));
-		valueModel.addValueChangeListener(mappedValueChangeHandler);
+		Object mapValue = map.get(propertyName);
+
+		ValueModel valueModel = createValueModelForMapValue(propertyName, mapValue);
 		getValueModels().put(propertyName, valueModel);
 		getValueModelNames().put(valueModel, propertyName);
 
 		return valueModel;
 	}
 
-	private final class MapChangeHandler implements PropertyChangeListener
+	protected ValueModel createValueModelForMapValue(String propertyName, Object mapValue)
 	{
-		@Override
-		@SuppressWarnings("unchecked")
-		public void propertyChange(PropertyChangeEvent evt)
-		{
-			if (evt.getNewValue() instanceof Map)
-			{
-				Map newMap = (Map) evt.getNewValue();
+		ValueModel valueModel = new ValueHolder(getChangeSupportFactory(), mapValue);
+		valueModel.addValueChangeListener(mappedValueChangeHandler);
+		return valueModel;
+	}
 
-				for (Entry<String, ValueModel> entry : getValueModels().entrySet())
+	protected void mapChanged(PropertyChangeEvent evt)
+	{
+		if (evt.getNewValue() instanceof Map)
+		{
+			Map newMap = (Map) evt.getNewValue();
+
+			for (Entry<String, ValueModel> entry : getValueModels().entrySet())
+			{
+				String key = entry.getKey();
+				ValueModel valueModel = entry.getValue();
+
+				if (newMap.containsKey(key))
 				{
-					if (newMap.containsKey(entry.getKey()))
-					{
-						entry.getValue().setValue(newMap.get(entry.getKey()));
-					}
-					else
-					{
-						newMap.put(entry.getKey(), entry.getValue().getValue());
-					}
+					valueModel.setValue(newMap.get(key));
+				}
+				else
+				{
+					newMap.put(key, valueModel.getValue());
 				}
 			}
 		}
 	}
 
-	private final class MappedValueChangeHandler implements PropertyChangeListener
+	protected void mapValueChange(PropertyChangeEvent evt)
 	{
+		if (getValueModelNames().containsKey(evt.getSource()))
+		{
+			((Map) getBean()).put(getValueModelNames().get(evt.getSource()), evt.getNewValue());
+		}
+	}
+
+	private final class MapChangeHandler implements PropertyChangeListener
+	{
+		private final DynamicPresentationModel dynamicPresentationModel;
+
+		public MapChangeHandler(DynamicPresentationModel dynamicPresentationModel)
+		{
+			this.dynamicPresentationModel = dynamicPresentationModel;
+		}
+
 		@Override
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			if (getValueModelNames().containsKey(evt.getSource()))
-			{
-				((Map) getBean()).put(getValueModelNames().get(evt.getSource()), evt.getNewValue());
-			}
+			dynamicPresentationModel.mapChanged(evt);
+		}
+	}
+
+	private final class MappedValueChangeHandler implements PropertyChangeListener
+	{
+		private final DynamicPresentationModel dynamicPresentationModel;
+
+		public MappedValueChangeHandler(DynamicPresentationModel dynamicPresentationModel)
+		{
+			this.dynamicPresentationModel = dynamicPresentationModel;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			dynamicPresentationModel.mapValueChange(evt);
 		}
 	}
 }
