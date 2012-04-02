@@ -177,6 +177,7 @@ public class DynamicPresentationModel extends PresentationModel
 		Object mapValue = map.get(propertyName);
 
 		ValueModel valueModel = createValueModelForMapValue(propertyName, mapValue);
+		valueModel.addValueChangeListener(mappedValueChangeHandler);
 		getValueModels().put(propertyName, valueModel);
 		getValueModelNames().put(valueModel, propertyName);
 
@@ -186,7 +187,6 @@ public class DynamicPresentationModel extends PresentationModel
 	protected ValueModel createValueModelForMapValue(String propertyName, Object mapValue)
 	{
 		ValueModel valueModel = new ValueHolder(getChangeSupportFactory(), mapValue);
-		valueModel.addValueChangeListener(mappedValueChangeHandler);
 		return valueModel;
 	}
 
