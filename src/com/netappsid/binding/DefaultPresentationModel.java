@@ -11,6 +11,7 @@ import com.netappsid.binding.state.StateModel;
 import com.netappsid.binding.state.StatePropertyChangeEvent;
 import com.netappsid.binding.value.ValueHolder;
 import com.netappsid.observable.ObservableCollectionSupportFactory;
+import com.netappsid.undoredo.UndoRedoManager;
 
 /**
  * 
@@ -26,6 +27,8 @@ public class DefaultPresentationModel extends PresentationModel
 	private final BeanAdapter beanAdapter;
 	private final StateModel stateModel;
 
+	private final UndoRedoManager undoRedoManager;
+
 	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
 			Class<?> beanClass)
 	{
@@ -35,13 +38,26 @@ public class DefaultPresentationModel extends PresentationModel
 	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
 			Class<?> beanClass, Object bean)
 	{
-		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(changeSupportFactory, bean, true));
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, bean, null);
+	}
+
+	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, Object bean, UndoRedoManager undoRedoManager)
+	{
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, new ValueHolder(changeSupportFactory, bean, true), undoRedoManager);
 	}
 
 	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
 			Class<?> beanClass, ValueModel beanChannel)
 	{
+		this(changeSupportFactory, observableCollectionSupportFactory, beanClass, beanChannel, null);
+	}
+
+	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
+			Class<?> beanClass, ValueModel beanChannel, UndoRedoManager undoRedoManager)
+	{
 		super(changeSupportFactory, observableCollectionSupportFactory);
+		this.undoRedoManager = undoRedoManager;
 		this.beanAdapter = new BeanAdapter(changeSupportFactory, observableCollectionSupportFactory, beanChannel, beanClass);
 		this.stateModel = new StateModel(changeSupportFactory);
 
@@ -120,6 +136,11 @@ public class DefaultPresentationModel extends PresentationModel
 	public StateModel getStateModel()
 	{
 		return stateModel;
+	}
+
+	public UndoRedoManager getUndoRedoManager()
+	{
+		return undoRedoManager;
 	}
 
 	/**
