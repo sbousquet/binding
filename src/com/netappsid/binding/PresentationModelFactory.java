@@ -12,7 +12,7 @@ import com.netappsid.binding.beans.BeanUtils;
 
 public class PresentationModelFactory
 {
-	private static DynamicPresentationModelFactory dynamicPresentationModelFactory = new DynamicPresentationModelFactory();
+	private static DynamicPresentationModelFactory dynamicPresentationModelFactory =  new DynamicPresentationModelFactoryImpl();
 
 	private PresentationModelFactory()
 	{
