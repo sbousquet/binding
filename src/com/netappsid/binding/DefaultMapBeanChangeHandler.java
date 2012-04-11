@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.jgoodies.binding.value.ValueModel;
 
-class DefaultMapBeanChangeHandler implements DynamicPresentationModelMapBeanChangeHandler
+public class DefaultMapBeanChangeHandler implements DynamicPresentationModelMapBeanChangeHandler
 {
 	private final DynamicPresentationModel dynamicPresentationModel;
 
