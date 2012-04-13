@@ -344,12 +344,12 @@ public abstract class PresentationModel extends Bean
 		this.parentModel = parentModel;
 	}
 
-	protected final ChangeSupportFactory getChangeSupportFactory()
+	public final ChangeSupportFactory getChangeSupportFactory()
 	{
 		return changeSupportFactory;
 	}
 
-	protected final ObservableCollectionSupportFactory getObservableCollectionSupportFactory()
+	public final ObservableCollectionSupportFactory getObservableCollectionSupportFactory()
 	{
 		return observableCollectionSupportFactory;
 	}

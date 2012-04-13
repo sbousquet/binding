@@ -12,6 +12,8 @@ import com.netappsid.binding.beans.BeanUtils;
 
 public class PresentationModelFactory
 {
+	private static DynamicPresentationModelFactory dynamicPresentationModelFactory =  new DynamicPresentationModelFactoryImpl();
+
 	private PresentationModelFactory()
 	{
 		// Hidden constructor
@@ -32,13 +34,11 @@ public class PresentationModelFactory
 			}
 			else if (List.class.isAssignableFrom(propertyDescriptor.getPropertyType()))
 			{
-				presentationModel = new SelectionPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
-						getGenericReturnType(propertyDescriptor), parentModel.getValueModel(propertyName));
+				presentationModel = newSelectionPresentationModel(parentModel, propertyName, propertyDescriptor);
 			}
 			else if (Map.class.isAssignableFrom(propertyDescriptor.getPropertyType()))
 			{
-				presentationModel = new DynamicPresentationModel(parentModel.getChangeSupportFactory(), parentModel.getObservableCollectionSupportFactory(),
-						parentModel.getValueModel(propertyName));
+				presentationModel = getDynamicPresentationModelFactory().newDynamicPresentationModel(parentModel, propertyName);
 			}
 			else
 			{
@@ -64,12 +64,19 @@ public class PresentationModelFactory
 		return presentationModel;
 	}
 
-	private static Class<?> getGenericReturnType(PropertyDescriptor propertyDescriptor)
+	private static PresentationModel newSelectionPresentationModel(PresentationModel parentModel, String propertyName, PropertyDescriptor propertyDescriptor)
+	{
+		PresentationModel presentationModel = new SelectionPresentationModel(parentModel.getChangeSupportFactory(),
+				parentModel.getObservableCollectionSupportFactory(), getGenericReturnType(propertyDescriptor), parentModel.getValueModel(propertyName));
+		return presentationModel;
+	}
+
+	public static Class<?> getGenericReturnType(PropertyDescriptor propertyDescriptor)
 	{
 		return extractType(propertyDescriptor.getReadMethod().getGenericReturnType());
 	}
 
-	private static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass, String propertyName)
+	public static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass, String propertyName)
 	{
 		try
 		{
@@ -107,5 +114,15 @@ public class PresentationModelFactory
 			}
 		}
 		return null;
+	}
+
+	protected static DynamicPresentationModelFactory getDynamicPresentationModelFactory()
+	{
+		return dynamicPresentationModelFactory;
+	}
+
+	public static void setDynamicPresentationModelFactory(DynamicPresentationModelFactory newDynamicPresentationModelFactory)
+	{
+		dynamicPresentationModelFactory = newDynamicPresentationModelFactory;
 	}
 }
