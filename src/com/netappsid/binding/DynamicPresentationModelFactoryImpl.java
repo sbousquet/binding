@@ -5,7 +5,7 @@ import java.util.Map;
 public class DynamicPresentationModelFactoryImpl implements DynamicPresentationModelFactory
 {
 	@Override
-	public PresentationModel newDynamicPresentationModel(PresentationModel parentModel, String propertyName)
+	public DynamicPresentationModel newDynamicPresentationModel(PresentationModel parentModel, String propertyName)
 	{
 		DynamicPresentationModel dynamicPresentationModel = new DynamicPresentationModel(parentModel.getChangeSupportFactory(),
 				parentModel.getObservableCollectionSupportFactory(), parentModel.getValueModel(propertyName), Map.class);
