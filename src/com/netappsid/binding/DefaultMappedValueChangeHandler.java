@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.jgoodies.binding.value.ValueModel;
 
-class DefaultMappedValueChangeHandler implements DynamicPresentationModelMappedValueChangedHandler
+public class DefaultMappedValueChangeHandler implements DynamicPresentationModelMappedValueChangedHandler
 {
 	private final DynamicPresentationModel dynamicPresentationModel;
 
