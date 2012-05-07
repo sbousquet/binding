@@ -37,10 +37,11 @@ public class SimplePropertyAdapter extends AbstractValueModel
 	public Object getValue()
 	{
 		final PropertyDescriptor propertyDescriptor = getPropertyDescriptor();
+		Object bean = beanAdapter.getBean();
 
-		if (propertyDescriptor != null && beanAdapter.getBean() != null)
+		if (propertyDescriptor != null && bean != null)
 		{
-			return BeanUtils.getValue(beanAdapter.getBean(), propertyDescriptor);
+			return BeanUtils.getValue(bean, propertyDescriptor);
 		}
 		else
 		{
