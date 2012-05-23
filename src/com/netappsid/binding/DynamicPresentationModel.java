@@ -192,7 +192,7 @@ public class DynamicPresentationModel extends PresentationModel
 	{
 		mapChannel.removeValueChangeListener(this.mapBeanChangeHandler);
 		this.mapBeanChangeHandler = mapBeanChangeHandler;
-		mapChannel.removeValueChangeListener(this.mapBeanChangeHandler);
+		mapChannel.addValueChangeListener(this.mapBeanChangeHandler);
 	}
 
 	protected DynamicPresentationModelValueModelFactory getValueModelFactory()
