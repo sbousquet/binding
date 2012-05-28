@@ -42,6 +42,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	private final ValueModel valueModel;
 	private final ModelCollectionChangeHandler modelCollectionListener = new ModelCollectionChangeHandler();
 	private final ObservableCollectionSupport observableCollectionSupport;
+	private final ValueChangeHandler valueChangeHandler = new ValueChangeHandler();
 
 	public AbstractCollectionValueModel(ValueModel valueModel, ChangeSupportFactory changeSupportFactory,
 			ObservableCollectionSupportFactory observableCollectionSupportFactory)
@@ -50,7 +51,7 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		this.observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
 		this.valueModel = valueModel;
 		installCollectionChangeHandler((ObservableCollection) valueModel.getValue());
-		valueModel.addValueChangeListener(new ValueChangeHandler());
+		valueModel.addValueChangeListener(valueChangeHandler);
 	}
 
 	@Override
@@ -96,5 +97,12 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 		{
 			observableCollection.removeCollectionChangeListener(modelCollectionListener);
 		}
+	}
+
+	@Override
+	public void dispose()
+	{
+		uninstallCollectionChangeHandler(getValue());
+		valueModel.removeValueChangeListener(valueChangeHandler);
 	}
 }

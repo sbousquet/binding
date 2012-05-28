@@ -218,4 +218,8 @@ public class CollectionValueHolder implements CollectionValueModel
 		collectionValue.unapply(difference);
 	}
 
+	@Override
+	public void dispose()
+	{
+	}
 }

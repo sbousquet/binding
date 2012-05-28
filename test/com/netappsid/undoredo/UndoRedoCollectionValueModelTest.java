@@ -23,6 +23,7 @@ import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
 import com.netappsid.observable.StandardObservableCollectionSupportFactory;
+import com.netappsid.undoredo.UndoRedoCollectionValueModel.DelegateCollectionValueModelCollectionChangeListener;
 
 public class UndoRedoCollectionValueModelTest
 {
@@ -228,4 +229,12 @@ public class UndoRedoCollectionValueModelTest
 	{
 		assertTrue(undoRedoCollectionValueModel.getCollectionChangeListeners().isEmpty());
 	}
+
+	@Test
+	public void testDispose()
+	{
+		undoRedoCollectionValueModel.dispose();
+		verify(undoRedoCollectionValueModel).removeCollectionChangeListener(any(DelegateCollectionValueModelCollectionChangeListener.class));
+	}
+
 }
