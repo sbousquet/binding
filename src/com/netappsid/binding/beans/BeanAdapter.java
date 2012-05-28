@@ -104,13 +104,13 @@ public class BeanAdapter extends Bean
 
 	public CollectionValueModel getCollectionValueModel(String propertyName)
 	{
-		CollectionValueModel collectionValueModel = collectionValueModels.get(propertyName);
+		CollectionValueModel collectionValueModel = getCollectionValueModelsCache().get(propertyName);
 
 		if (collectionValueModel == null)
 		{
 			SimplePropertyAdapter propertyAdapter = getValueModel(propertyName);
 			collectionValueModel = new IndexedCollectionValueModel(propertyAdapter, getChangeSupportFactory(), observableCollectionSupportFactory);
-			collectionValueModels.put(propertyName, collectionValueModel);
+			getCollectionValueModelsCache().put(propertyName, collectionValueModel);
 		}
 
 		return collectionValueModel;
@@ -161,6 +161,14 @@ public class BeanAdapter extends Bean
 	public synchronized void release()
 	{
 		removeChangeHandlerFrom(getBean());
+
+		// Ensure to dispose every CollectionValueModel in order
+		// to release listeners on Collections on the bean itself
+		for (CollectionValueModel collectionValueModel : getCollectionValueModelsCache().values())
+		{
+			collectionValueModel.dispose();
+		}
+
 		indirectChangeSupport.removeAll();
 	}
 
@@ -199,6 +207,11 @@ public class BeanAdapter extends Bean
 		{
 			throw new IllegalArgumentException("The bean channel must have the identity check enabled.");
 		}
+	}
+
+	protected Map<String, CollectionValueModel> getCollectionValueModelsCache()
+	{
+		return collectionValueModels;
 	}
 
 	private final class BeanChangeHandler implements PropertyChangeListener
