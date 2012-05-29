@@ -90,4 +90,12 @@ public class CollectionValueHolderTest
 	{
 		holder.setValue(1);
 	}
+
+	@Test
+	public void dispose()
+	{
+		assertEquals(1, observableList.getCollectionChangeListeners().size());
+		holder.dispose();
+		assertEquals(0, observableList.getCollectionChangeListeners().size());
+	}
 }

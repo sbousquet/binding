@@ -5,4 +5,5 @@ import com.netappsid.observable.ObservableList;
 
 public interface CollectionValueModel<T> extends ValueModel, ObservableList<T>
 {
+	void dispose();
 }

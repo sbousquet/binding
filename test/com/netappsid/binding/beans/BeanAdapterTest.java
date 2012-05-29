@@ -1,6 +1,10 @@
 package com.netappsid.binding.beans;
 
+import static org.mockito.Mockito.*;
+
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -185,7 +189,7 @@ public class BeanAdapterTest
 	}
 
 	@Test
-	public void testRelease()
+	public void testRelease_EnsurePropertyListenersOnBeanNotRemoved()
 	{
 		final TestBean bean = new TestBean("1");
 		final int listenerCount = bean.getPropertyChangeListeners().length;
@@ -193,6 +197,21 @@ public class BeanAdapterTest
 
 		adapter.release();
 		Assert.assertEquals(listenerCount, bean.getPropertyChangeListeners().length);
+	}
+
+	@Test
+	public void testRelease_EnsureCollectionValueModelsAreDisposed()
+	{
+		final TestBean bean = new TestBean("1");
+
+		final BeanAdapter adapter = spy(newBeanAdapter(bean, TestBean.class));
+		Map<String, CollectionValueModel> collectionValueModels = new HashMap<String, CollectionValueModel>();
+
+		CollectionValueModel collectionValueModel = mock(CollectionValueModel.class);
+		collectionValueModels.put("test", collectionValueModel);
+		doReturn(collectionValueModels).when(adapter).getCollectionValueModelsCache();
+		adapter.release();
+		verify(collectionValueModel).dispose();
 	}
 
 	@Test

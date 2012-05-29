@@ -248,4 +248,14 @@ public class CollectionValueHolder<E> extends ValueHolder implements CollectionV
 			collectionChangeSupport.fireCollectionChangeEvent(new CollectionChangeEvent<E>(CollectionValueHolder.this, event.getDifference()));
 		}
 	}
+
+	@Override
+	public void dispose()
+	{
+		ObservableList<E> observableList = getObservableList();
+		if (observableList != null)
+		{
+			observableList.removeCollectionChangeListener(collectionChangeHandler);
+		}
+	}
 }

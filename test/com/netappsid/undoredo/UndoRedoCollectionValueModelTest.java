@@ -23,6 +23,7 @@ import com.netappsid.observable.ListDifference;
 import com.netappsid.observable.ObservableCollections;
 import com.netappsid.observable.ObservableList;
 import com.netappsid.observable.StandardObservableCollectionSupportFactory;
+import com.netappsid.undoredo.UndoRedoCollectionValueModel.DelegateCollectionValueModelCollectionChangeListener;
 
 public class UndoRedoCollectionValueModelTest
 {
@@ -50,7 +51,8 @@ public class UndoRedoCollectionValueModelTest
 
 		final StandardObservableCollectionSupportFactory collectionSupportFactory = new StandardObservableCollectionSupportFactory();
 		final StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
-		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, collectionSupportFactory, changeSupportFactory);
+		undoRedoCollectionValueModel = spy(new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, collectionSupportFactory,
+				changeSupportFactory));
 
 		oldObject = new Object();
 		newObject = new Object();
@@ -228,4 +230,12 @@ public class UndoRedoCollectionValueModelTest
 	{
 		assertTrue(undoRedoCollectionValueModel.getCollectionChangeListeners().isEmpty());
 	}
+
+	@Test
+	public void testDispose()
+	{
+		undoRedoCollectionValueModel.dispose();
+		verify(collectionValueModel).removeCollectionChangeListener(any(DelegateCollectionValueModelCollectionChangeListener.class));
+	}
+
 }
