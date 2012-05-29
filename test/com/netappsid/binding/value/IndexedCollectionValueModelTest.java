@@ -1,6 +1,7 @@
 package com.netappsid.binding.value;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -11,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.netappsid.binding.beans.AbstractCollectionValueModel.ModelCollectionChangeHandler;
+import com.netappsid.binding.beans.AbstractCollectionValueModel.ValueChangeHandler;
 import com.netappsid.binding.beans.SimplePropertyAdapter;
 import com.netappsid.binding.beans.support.StandardChangeSupportFactory;
 import com.netappsid.observable.ClearAndAddAllBatchAction;
@@ -26,6 +29,8 @@ public class IndexedCollectionValueModelTest
 	private Object firstObject;
 	private Object added1;
 	private Object added2;
+	private ObservableList collection;
+	private SimplePropertyAdapter simplePropertyAdapter;
 
 	@Before
 	public void setup()
@@ -33,9 +38,9 @@ public class IndexedCollectionValueModelTest
 		firstObject = new Object();
 		added1 = new Object();
 		added2 = new Object();
-		List collection = ObservableCollections.newObservableArrayList(firstObject);
+		collection = spy(ObservableCollections.newObservableArrayList(firstObject));
 
-		SimplePropertyAdapter simplePropertyAdapter = mock(SimplePropertyAdapter.class);
+		simplePropertyAdapter = mock(SimplePropertyAdapter.class);
 		when(simplePropertyAdapter.getValue()).thenReturn(collection);
 
 		indexedCollectionValueModel = new IndexedCollectionValueModel(simplePropertyAdapter, new StandardChangeSupportFactory(),
@@ -302,5 +307,13 @@ public class IndexedCollectionValueModelTest
 	public void testGetCollectionChangeListeners_EnsureNotNull()
 	{
 		assertTrue(indexedCollectionValueModel.getCollectionChangeListeners().isEmpty());
+	}
+
+	@Test
+	public void testDispose()
+	{
+		indexedCollectionValueModel.dispose();
+		verify(collection).removeCollectionChangeListener(any(ModelCollectionChangeHandler.class));
+		verify(simplePropertyAdapter).removeValueChangeListener(any(ValueChangeHandler.class));
 	}
 }

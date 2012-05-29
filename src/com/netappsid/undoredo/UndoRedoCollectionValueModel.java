@@ -19,7 +19,7 @@ import com.netappsid.observable.ObservableCollectionSupportFactory;
 
 public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> & Observable> extends UndoRedoValueModel<T> implements CollectionValueModel<E>
 {
-	private final class DelegateCollectionValueModelCollectionChangeListener implements CollectionChangeListener
+	protected final class DelegateCollectionValueModelCollectionChangeListener implements CollectionChangeListener
 	{
 		@Override
 		public void onCollectionChange(CollectionChangeEvent event)
@@ -247,22 +247,12 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		return getValueModel().subList(fromIndex, toIndex);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.netappsid.observable.ObservableCollection#apply(com.netappsid.observable.CollectionDifference)
-	 */
 	@Override
 	public void apply(CollectionDifference<E> difference)
 	{
 		getValueModel().apply(difference);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.netappsid.observable.ObservableCollection#unapply(com.netappsid.observable.CollectionDifference)
-	 */
 	@Override
 	public void unapply(CollectionDifference<E> difference)
 	{
@@ -273,5 +263,16 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	public ImmutableList<CollectionChangeListener<E>> getCollectionChangeListeners()
 	{
 		return observableCollectionSupport.getCollectionChangeListeners();
+	}
+
+	@Override
+	public void dispose()
+	{
+		T valueModel = getValueModel();
+		
+		if(valueModel != null)
+		{
+			valueModel.removeCollectionChangeListener(collectionChangeHandler);
+		}
 	}
 }
