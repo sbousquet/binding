@@ -51,7 +51,8 @@ public class UndoRedoCollectionValueModelTest
 
 		final StandardObservableCollectionSupportFactory collectionSupportFactory = new StandardObservableCollectionSupportFactory();
 		final StandardChangeSupportFactory changeSupportFactory = new StandardChangeSupportFactory();
-		undoRedoCollectionValueModel = new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, collectionSupportFactory, changeSupportFactory);
+		undoRedoCollectionValueModel = spy(new UndoRedoCollectionValueModel(undoRedoManager, collectionValueModel, collectionSupportFactory,
+				changeSupportFactory));
 
 		oldObject = new Object();
 		newObject = new Object();
@@ -234,7 +235,7 @@ public class UndoRedoCollectionValueModelTest
 	public void testDispose()
 	{
 		undoRedoCollectionValueModel.dispose();
-		verify(undoRedoCollectionValueModel).removeCollectionChangeListener(any(DelegateCollectionValueModelCollectionChangeListener.class));
+		verify(collectionValueModel).removeCollectionChangeListener(any(DelegateCollectionValueModelCollectionChangeListener.class));
 	}
 
 }
