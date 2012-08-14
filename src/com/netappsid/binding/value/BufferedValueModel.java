@@ -55,7 +55,7 @@ public final class BufferedValueModel extends AbstractValueModel
 
 		ReadAccessResult newReadValue = readBufferedOrSubjectValue();
 		Object newValue = newReadValue.value;
-		
+
 		if (oldValue != null || newValue != null)
 		{
 			fireValueChange(oldValue, newValue, true);
@@ -82,6 +82,7 @@ public final class BufferedValueModel extends AbstractValueModel
 		firePropertyChange(PROPERTYNAME_TRIGGER_CHANNEL, oldTriggerChannel, newTriggerChannel);
 	}
 
+	@Override
 	public Object getValue()
 	{
 		if (subject == null)
@@ -90,6 +91,7 @@ public final class BufferedValueModel extends AbstractValueModel
 		return isBuffering() ? bufferedValue : subject.getValue();
 	}
 
+	@Override
 	public void setValue(Object newBufferedValue)
 	{
 		if (subject == null)
@@ -186,6 +188,7 @@ public final class BufferedValueModel extends AbstractValueModel
 	{
 		Object oldValue;
 
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			if (!isBuffering())
@@ -197,6 +200,7 @@ public final class BufferedValueModel extends AbstractValueModel
 
 	private final class TriggerChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			if (Boolean.TRUE.equals(evt.getNewValue()))
@@ -204,5 +208,16 @@ public final class BufferedValueModel extends AbstractValueModel
 			else if (Boolean.FALSE.equals(evt.getNewValue()))
 				flush();
 		}
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		if (getSubject() instanceof BoundValueModel)
+		{
+			return ((BoundValueModel) getSubject()).getPropertyName();
+		}
+
+		return super.getPropertyName();
 	}
 }

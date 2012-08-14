@@ -23,6 +23,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		this.propertyName = propertyName;
 	}
 
+	@Override
 	public String getPropertyName()
 	{
 		return propertyName;

@@ -8,9 +8,10 @@ import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.beans.support.IdentityPropertyChangeSupport;
 import com.netappsid.binding.value.AbstractValueModel;
+import com.netappsid.binding.value.BoundValueModel;
 import com.netappsid.observable.ObservableByName;
 
-public class UndoRedoValueModel<T extends ValueModel & Observable> implements ValueModel, ObservableByName
+public class UndoRedoValueModel<T extends ValueModel & Observable> implements BoundValueModel, ObservableByName
 {
 	private final class DelegateValueModelValueChangeListener implements PropertyChangeListener
 	{
@@ -82,7 +83,7 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 
 	public void undo(UndoRedoValue undoRedoValue)
 	{
-			getValueModel().setValue(undoRedoValue.getOldValue());
+		getValueModel().setValue(undoRedoValue.getOldValue());
 	}
 
 	public ValueModel getDelegate()
@@ -122,5 +123,16 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Va
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
 	{
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		if (getValueModel() instanceof BoundValueModel)
+		{
+			return ((BoundValueModel) getValueModel()).getPropertyName();
+		}
+
+		return BoundValueModel.UNKNOWN_PROPERTY;
 	}
 }
