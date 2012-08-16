@@ -269,8 +269,8 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 	public void dispose()
 	{
 		T valueModel = getValueModel();
-		
-		if(valueModel != null)
+
+		if (valueModel != null)
 		{
 			valueModel.removeCollectionChangeListener(collectionChangeHandler);
 		}

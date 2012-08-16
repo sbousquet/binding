@@ -48,9 +48,8 @@ import com.netappsid.binding.beans.support.ChangeSupportFactory;
  * 
  */
 
-public abstract class AbstractValueModel extends Bean implements ValueModel
+public abstract class AbstractValueModel extends Bean implements BoundValueModel
 {
-
 	/**
 	 * The name of the bound property <em>value</em>.
 	 */
@@ -62,7 +61,7 @@ public abstract class AbstractValueModel extends Bean implements ValueModel
 	{
 		super(changeSupportFactory);
 	}
-	
+
 	/**
 	 * Registers the given PropertyChangeListener with this model. The listener will be notified if the value has changed.
 	 * <p>
@@ -402,4 +401,9 @@ public abstract class AbstractValueModel extends Bean implements ValueModel
 		}
 	}
 
+	@Override
+	public String getPropertyName()
+	{
+		return BoundValueModel.UNKNOWN_PROPERTY;
+	}
 }

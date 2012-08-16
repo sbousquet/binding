@@ -27,11 +27,13 @@ public final class ComponentValueModel extends AbstractValueModel
 		subject.addValueChangeListener(new SubjectValueChangeHandler());
 	}
 
+	@Override
 	public Object getValue()
 	{
 		return subject.getValue();
 	}
 
+	@Override
 	public void setValue(Object newValue)
 	{
 		subject.setValue(newValue);
@@ -75,9 +77,21 @@ public final class ComponentValueModel extends AbstractValueModel
 
 	private final class SubjectValueChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			fireValueChange(evt.getOldValue(), evt.getNewValue(), true);
 		}
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		if (subject instanceof BoundValueModel)
+		{
+			return ((BoundValueModel) subject).getPropertyName();
+		}
+
+		return super.getPropertyName();
 	}
 }

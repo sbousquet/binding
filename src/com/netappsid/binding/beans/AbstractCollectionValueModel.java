@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import com.jgoodies.binding.value.ValueModel;
 import com.netappsid.binding.beans.support.ChangeSupportFactory;
 import com.netappsid.binding.value.AbstractValueModel;
+import com.netappsid.binding.value.BoundValueModel;
 import com.netappsid.observable.CollectionChangeEvent;
 import com.netappsid.observable.CollectionChangeListener;
 import com.netappsid.observable.ObservableCollection;
@@ -104,5 +105,16 @@ public abstract class AbstractCollectionValueModel<E, T extends ObservableList<E
 	{
 		uninstallCollectionChangeHandler(getValue());
 		valueModel.removeValueChangeListener(valueChangeHandler);
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		if (valueModel instanceof BoundValueModel)
+		{
+			return ((BoundValueModel) valueModel).getPropertyName();
+		}
+
+		return super.getPropertyName();
 	}
 }
