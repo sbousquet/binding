@@ -173,6 +173,11 @@ public class DynamicPresentationModel extends PresentationModel
 		return valueModel;
 	}
 
+	/**
+	 * Handler to detect the change of one of the Map Entry's ValueModel mapped to the value e.g.: The CustomAttribute changed
+	 * 
+	 * @return
+	 */
 	protected DynamicPresentationModelMappedValueChangedHandler getMappedValueChangeHandler()
 	{
 		return mappedValueChangeHandler;
@@ -183,6 +188,11 @@ public class DynamicPresentationModel extends PresentationModel
 		this.mappedValueChangeHandler = mappedValueChangeHandler;
 	}
 
+	/**
+	 * Handler to detect the change of the Map object itself
+	 * 
+	 * @return
+	 */
 	protected DynamicPresentationModelMapBeanChangeHandler getMapBeanChangeHandler()
 	{
 		return mapBeanChangeHandler;
