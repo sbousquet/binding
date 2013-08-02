@@ -282,7 +282,7 @@ public class BasicComponentFactory {
      */
     public static JFormattedTextField createDateField(
         ValueModel valueModel) {
-        DateFormat shortFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+        DateFormat shortFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         shortFormat.setLenient(false);
 
         JFormattedTextField.AbstractFormatter defaultFormatter =
