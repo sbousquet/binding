@@ -29,6 +29,8 @@ public class DefaultPresentationModel extends PresentationModel
 
 	private final UndoRedoManager undoRedoManager;
 
+	private UpdateStateOnBeanPropertyChangeHandler stateUpdaterOnBeanPropertyChange;
+
 	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, ObservableCollectionSupportFactory observableCollectionSupportFactory,
 			Class<?> beanClass)
 	{
@@ -63,7 +65,8 @@ public class DefaultPresentationModel extends PresentationModel
 
 		setBeanClass(beanClass);
 		beanAdapter.addPropertyChangeListener(BeanAdapter.PROPERTYNAME_BEAN, new BeanChangeHandler());
-		beanAdapter.addBeanPropertyChangeListener(new UpdateStateOnBeanPropertyChangeHandler());
+		stateUpdaterOnBeanPropertyChange = new UpdateStateOnBeanPropertyChangeHandler(this.stateModel);
+		beanAdapter.addBeanPropertyChangeListener(stateUpdaterOnBeanPropertyChange);
 	}
 
 	@Override
@@ -100,6 +103,19 @@ public class DefaultPresentationModel extends PresentationModel
 		}
 
 		return valueModel;
+	}
+
+	/**
+	 * Replaces the current {@link UpdateStateOnBeanPropertyChangeHandler} on the inner beanAdapter with the provided one.
+	 * 
+	 * @param stateUpdaterOnBeanPropertyChange
+	 */
+	public void setStateUpdaterOnBeanPropertyChange(UpdateStateOnBeanPropertyChangeHandler stateUpdaterOnBeanPropertyChange)
+	{
+		beanAdapter.removeBeanPropertyChangeListener(this.stateUpdaterOnBeanPropertyChange);
+		this.stateUpdaterOnBeanPropertyChange = stateUpdaterOnBeanPropertyChange;
+		beanAdapter.addBeanPropertyChangeListener(this.stateUpdaterOnBeanPropertyChange);
+
 	}
 
 	@Override
@@ -159,11 +175,25 @@ public class DefaultPresentationModel extends PresentationModel
 		}
 	}
 
-	private class UpdateStateOnBeanPropertyChangeHandler implements PropertyChangeListener
+	/**
+	 * A listener whose responsibility is to update a {@link StateModel}'s state when it receives a {@link StatePropertyChangeEvent} which affects state.<br/>
+	 * It was made static so it can be extended to customize its behavior, but this only works if the {@link DefaultPresentationModel}'s stateModel can never
+	 * change instance (which is the case at the time of writing this).
+	 * 
+	 */
+	public static class UpdateStateOnBeanPropertyChangeHandler implements PropertyChangeListener
 	{
+		private final StateModel stateModel;
+
+		public UpdateStateOnBeanPropertyChangeHandler(StateModel stateModel)
+		{
+			this.stateModel = stateModel;
+		}
+
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
+			// If event should impact state, change the state to dirty
 			if (evt instanceof StatePropertyChangeEvent && ((StatePropertyChangeEvent) evt).isAffectingState())
 			{
 				stateModel.setState(State.DIRTY);

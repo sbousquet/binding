@@ -192,6 +192,16 @@ public abstract class PresentationModel extends Bean
 	public abstract Object getBean();
 
 	/**
+	 * Returns the root model's bean.<br/>
+	 * 
+	 * @return
+	 */
+	public Object getRootBean()
+	{
+		return getRootModel().getBean();
+	}
+
+	/**
 	 * <p>
 	 * Sets a new bean as content of the bean channel. All adapted properties will reflect this change.
 	 * </p>
