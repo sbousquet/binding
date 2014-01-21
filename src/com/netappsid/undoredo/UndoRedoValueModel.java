@@ -11,7 +11,7 @@ import com.netappsid.binding.value.AbstractValueModel;
 import com.netappsid.binding.value.BoundValueModel;
 import com.netappsid.observable.ObservableByName;
 
-public class UndoRedoValueModel<T extends ValueModel & Observable> implements BoundValueModel, ObservableByName
+public class UndoRedoValueModel<T extends ValueModel & Observable> implements BoundValueModel, ObservableByName, ReinitializableValueModel
 {
 	private final class DelegateValueModelValueChangeListener implements PropertyChangeListener
 	{
@@ -74,6 +74,19 @@ public class UndoRedoValueModel<T extends ValueModel & Observable> implements Bo
 		getUndoRedoManager().beginTransaction();
 		getValueModel().setValue(value);
 		getUndoRedoManager().endTransaction();
+	}
+
+	@Override
+	public void reinitialize(Object value)
+	{
+		if (getValueModel() instanceof ReinitializableValueModel)
+		{
+			((ReinitializableValueModel) getValueModel()).reinitialize(value);
+		}
+		else
+		{
+			getValueModel().setValue(value);
+		}
 	}
 
 	public void redo(UndoRedoValue undoRedoValue)
