@@ -24,7 +24,10 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 		@Override
 		public void onCollectionChange(CollectionChangeEvent event)
 		{
-			getUndoRedoManager().push(new CollectionChangeOperation(UndoRedoCollectionValueModel.this, event));
+			if (trackingEnabled)
+			{
+				getUndoRedoManager().push(new CollectionChangeOperation(UndoRedoCollectionValueModel.this, event));
+			}
 			CollectionChangeEvent newCollectionChangeEvent = observableCollectionSupport.newCollectionChangeEvent(event.getDifference());
 			observableCollectionSupport.fireCollectionChangeEvent(newCollectionChangeEvent);
 		}
@@ -32,6 +35,7 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 
 	private final ObservableCollectionSupport observableCollectionSupport;
 	private final CollectionChangeListener collectionChangeHandler;
+	private boolean trackingEnabled = true;
 
 	public UndoRedoCollectionValueModel(UndoRedoManager manager, T valueModel, ObservableCollectionSupportFactory observableCollectionSupportFactory,
 			ChangeSupportFactory changeSupportFactory)
@@ -42,8 +46,19 @@ public class UndoRedoCollectionValueModel<E, T extends CollectionValueModel<E> &
 
 		observableCollectionSupport = observableCollectionSupportFactory.newObservableCollectionSupport(this);
 		getValueModel().addCollectionChangeListener(collectionChangeHandler);
+		trackingEnabled = true;
 	}
 
+	public void enableCollectionTracking()
+	{
+		trackingEnabled = true;
+	}
+	
+	public void disableCollectionTracking()
+	{
+		trackingEnabled = false;		
+	}
+		
 	protected CollectionChangeListener getUndoRedoManagerPushHandler()
 	{
 		return collectionChangeHandler;
