@@ -307,4 +307,11 @@ public class SelectionPresentationModel extends PresentationModel
 			this.selectionKey = Validate.notNull(selectionKey, "Selection key must not be null.");
 		}
 	}
+
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -256,4 +256,11 @@ public class DynamicPresentationModel extends PresentationModel
 			}
 		}
 	}
+
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

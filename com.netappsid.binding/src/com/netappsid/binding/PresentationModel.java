@@ -409,4 +409,6 @@ public abstract class PresentationModel extends Bean
 	{
 		return changeSupportFactory;
 	}
+	
+	public abstract void dispose();
 }

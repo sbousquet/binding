@@ -12,7 +12,7 @@ public class SimplePropertyAdapter extends AbstractValueModel
 {
 	private static final Logger LOGGER = Logger.getLogger(SimplePropertyAdapter.class);
 	
-	private final BeanAdapter beanAdapter;
+	private BeanAdapter beanAdapter;
 	private final String propertyName;
 
 	public SimplePropertyAdapter(BeanAdapter beanAdapter, String propertyName)
@@ -131,5 +131,10 @@ public class SimplePropertyAdapter extends AbstractValueModel
 		}
 
 		return null;
+	}
+	
+	public void dispose()
+	{
+		beanAdapter = null;
 	}
 }

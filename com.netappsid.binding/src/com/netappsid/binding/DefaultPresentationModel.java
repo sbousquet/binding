@@ -26,6 +26,9 @@ public class DefaultPresentationModel extends PresentationModel
 	private final BeanAdapter beanAdapter;
 	private final StateModel stateModel;
 
+	private BeanChangeHandler beanChangeHandler;
+	private UpdateStateOnBeanPropertyChangeHandler updateStateOnBeanPropertyChangeHandler;
+
 	public DefaultPresentationModel(ChangeSupportFactory changeSupportFactory, Class<?> beanClass)
 	{
 		this(changeSupportFactory, beanClass, new ValueHolder(changeSupportFactory, null, true));
@@ -43,8 +46,10 @@ public class DefaultPresentationModel extends PresentationModel
 		this.stateModel = new StateModel(changeSupportFactory);
 
 		setBeanClass(beanClass);
-		beanAdapter.addPropertyChangeListener(BeanAdapter.PROPERTYNAME_BEAN, new BeanChangeHandler());
-		beanAdapter.addBeanPropertyChangeListener(new UpdateStateOnBeanPropertyChangeHandler());
+		beanChangeHandler = new BeanChangeHandler();
+		beanAdapter.addPropertyChangeListener(BeanAdapter.PROPERTYNAME_BEAN, beanChangeHandler);
+		updateStateOnBeanPropertyChangeHandler = new UpdateStateOnBeanPropertyChangeHandler(stateModel);
+		beanAdapter.addBeanPropertyChangeListener(updateStateOnBeanPropertyChangeHandler);
 	}
 
 	@Override
@@ -182,8 +187,15 @@ public class DefaultPresentationModel extends PresentationModel
 		}
 	}
 
-	private class UpdateStateOnBeanPropertyChangeHandler implements PropertyChangeListener
+	private static final class UpdateStateOnBeanPropertyChangeHandler implements PropertyChangeListener
 	{
+		private final StateModel stateModel;
+		
+		public UpdateStateOnBeanPropertyChangeHandler(StateModel stateModel)
+		{
+			this.stateModel = stateModel;
+		}
+		
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			if (evt instanceof StatePropertyChangeEvent && ((StatePropertyChangeEvent) evt).isAffectingState())
@@ -191,5 +203,16 @@ public class DefaultPresentationModel extends PresentationModel
 				stateModel.setState(State.DIRTY);
 			}
 		}
+	}
+	
+	@Override
+	public void dispose()
+	{
+		beanAdapter.removeBeanPropertyChangeListener(updateStateOnBeanPropertyChangeHandler);
+		beanAdapter.removePropertyChangeListener(BeanAdapter.PROPERTYNAME_BEAN, beanChangeHandler);
+		beanAdapter.release();
+		beanAdapter.dispose();
+		updateStateOnBeanPropertyChangeHandler = null;
+		beanChangeHandler = null;
 	}
 }
