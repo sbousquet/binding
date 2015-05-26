@@ -105,7 +105,10 @@ public class DefaultPresentationModel extends PresentationModel
 				final PresentationModel subModel = PresentationModelFactory.createPresentationModel(this, modelName);
 
 				getSubModels().put(modelName, subModel);
-				stateModel.link(subModel.getStateModel());
+				if (subModel.getStateModel() != null)
+				{
+					stateModel.link(subModel.getStateModel());
+				}
 			}
 
 			return getSubModels().get(modelName);
@@ -181,6 +184,7 @@ public class DefaultPresentationModel extends PresentationModel
 	 */
 	private final class BeanChangeHandler implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
 			fireIdentityPropertyChange(PROPERTYNAME_BEAN, evt.getOldValue(), evt.getNewValue());
